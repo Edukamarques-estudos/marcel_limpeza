@@ -107,19 +107,37 @@
   .btn-sm { padding: 5px 9px; font-size: 0.78rem; }
   .btn-danger { background: var(--red-bg); color: var(--red); }
 
-  /* Quick Service Chips */
+  /* Quick Service Chips (Editáveis e Removíveis) */
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-  .chip {
+  .chip-wrap {
+    display: inline-flex;
+    align-items: center;
     background: #e0f2fe;
-    color: #0369a1;
     border: 1px solid #bae6fd;
-    padding: 5px 9px;
     border-radius: 16px;
+    overflow: hidden;
+  }
+  .chip-btn {
+    background: transparent;
+    border: none;
+    color: #0369a1;
+    padding: 5px 8px 5px 10px;
     font-size: 0.78rem;
     font-weight: 700;
     cursor: pointer;
   }
-  .chip:active { background: #bae6fd; }
+  .chip-btn:active { background: #bae6fd; }
+  .chip-del {
+    background: transparent;
+    border: none;
+    border-left: 1px solid #bae6fd;
+    color: #0284c7;
+    padding: 5px 8px 5px 6px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .chip-del:hover { background: #fee2e2; color: var(--red); }
 
   /* Excel-style Tables */
   .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; }
@@ -173,6 +191,7 @@
     border-radius: 8px 8px 0 0;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 8px;
   }
   body.print-mode .quote-preview-banner { display: flex; }
   .exit-print-btn {
@@ -196,7 +215,7 @@
   .st-orc { background: #fef3c7; color: #b45309; }
   .st-ok { background: #dcfce7; color: #15803d; }
 
-  /* Modal */
+  /* Modal Novo Atalho */
   .modal-backdrop {
     display: none;
     position: fixed;
@@ -208,7 +227,7 @@
     padding: 16px;
   }
   .modal-backdrop.open { display: flex; }
-  .modal { background: #fff; border-radius: 10px; max-width: 460px; width: 100%; padding: 16px; max-height: 90vh; overflow-y: auto; }
+  .modal { background: #fff; border-radius: 10px; max-width: 420px; width: 100%; padding: 16px; }
 </style>
 </head>
 <body>
@@ -218,10 +237,7 @@
 <header>
   <div class="top-bar">
     <div class="brand">🧼 DR. LIMPEZA <span style="font-weight:400;font-size:0.8rem;opacity:0.85;">| Gestão</span></div>
-    <div style="display:flex;gap:6px;align-items:center;">
-      <span id="syncStatus" class="sync-badge sync-warn">Local</span>
-      <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;" onclick="openConfigModal()" title="Configurar Firebase">⚙️</button>
-    </div>
+    <span id="syncStatus" class="sync-badge sync-warn">Local</span>
   </div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('orcamento', this)">📋 Orçamento</button>
@@ -240,8 +256,9 @@
         <div style="font-size:0.75rem;opacity:0.9;">Higienização & Limpeza Profissional</div>
       </div>
       <div style="text-align:right;font-size:0.78rem;">
+        <div style="font-weight:800;">ORÇAMENTO</div>
         <div id="printDate">--/--/----</div>
-        <div style="font-weight:700;">ORÇAMENTO</div>
+        <div style="font-size:0.66rem;opacity:0.88;margin-top:2px;">Orçamento válido por 10 dias</div>
       </div>
     </div>
 
@@ -262,8 +279,8 @@
       </div>
       <div class="grid-2">
         <div class="form-group" style="margin-bottom:0;">
-          <label>Bairro / Endereço</label>
-          <input type="text" id="cliEnd" placeholder="Ex: Vila Prudente">
+          <label>Endereço</label>
+          <input type="text" id="cliEnd" placeholder="Ex: Rua das Flores, 123 - Vila Prudente">
         </div>
         <div class="form-group" style="margin-bottom:0;">
           <label>Data do Serviço</label>
@@ -273,17 +290,11 @@
     </div>
 
     <div class="card no-print">
-      <div class="card-title">Adicionar Itens ao Orçamento</div>
-      <div class="chips">
-        <span class="chip" onclick="quickAdd('Sofá 2 Lugares', 160)">+ Sofá 2L (R$160)</span>
-        <span class="chip" onclick="quickAdd('Sofá 3 Lugares', 200)">+ Sofá 3L (R$200)</span>
-        <span class="chip" onclick="quickAdd('Sofá Retrátil', 250)">+ Retrátil (R$250)</span>
-        <span class="chip" onclick="quickAdd('Colchão Casal', 150)">+ Colchão Casal (R$150)</span>
-        <span class="chip" onclick="quickAdd('Colchão Solteiro', 110)">+ Solteiro (R$110)</span>
-        <span class="chip" onclick="quickAdd('Cadeira Estofada', 35)">+ Cadeira (R$35)</span>
-        <span class="chip" onclick="quickAdd('Impermeabilização', 180)">+ Impermeab. (R$180)</span>
-        <span class="chip" onclick="quickAdd('Bancos Carro', 180)">+ Carro (R$180)</span>
+      <div class="card-title">
+        <span>Adicionar Itens ao Orçamento</span>
+        <button class="btn btn-sm btn-outline" onclick="openAtalhoModal()">+ Novo Atalho</button>
       </div>
+      <div class="chips" id="quickChipsContainer"></div>
       <div class="grid-3">
         <div>
           <label>Serviço / Item</label>
@@ -439,35 +450,51 @@
 
 </div>
 
-<!-- MODAL CONFIGURAÇÃO FIREBASE -->
-<div class="modal-backdrop" id="configModal">
+<!-- MODAL NOVO ATALHO DE SERVIÇO -->
+<div class="modal-backdrop" id="atalhoModal">
   <div class="modal">
     <div class="card-title">
-      <span>⚙️ Conexão Firebase Realtime DB</span>
-      <button class="btn btn-sm btn-outline" onclick="closeConfigModal()">✕</button>
-    </div>
-    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;">
-      Cole abaixo a URL do seu Firebase Realtime Database (ex: <code>https://seu-projeto-default-rtdb.firebaseio.com</code>) ou o objeto <code>firebaseConfig</code>. Os dados ficam salvos na nuvem e sincronizados entre celular e PC.
-    </p>
-    <div class="form-group">
-      <label>Database URL (Obrigatório para sincronizar)</label>
-      <input type="text" id="cfgDbUrl" placeholder="https://seu-projeto-default-rtdb.firebaseio.com">
+      <span>+ Cadastrar Botão Rápido</span>
+      <button class="btn btn-sm btn-outline" onclick="closeAtalhoModal()">✕</button>
     </div>
     <div class="form-group">
-      <label>Pasta / Nó no Banco</label>
-      <input type="text" id="cfgNode" value="dr_limpeza">
+      <label>Nome do Serviço / Produto</label>
+      <input type="text" id="novoAtalhoNome" placeholder="Ex: Tapete 2x3m">
     </div>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-primary" onclick="salvarConfigFirebase()">Salvar e Conectar</button>
+    <div class="form-group">
+      <label>Valor Padrão (R$)</label>
+      <input type="number" id="novoAtalhoVal" placeholder="120.00" step="0.01">
     </div>
+    <button class="btn btn-primary" onclick="salvarNovoAtalho()">Salvar Botão</button>
   </div>
 </div>
 
 <script>
+  // ==================== CONFIGURAÇÃO FIXA DO FIREBASE ====================
+  // Cole aqui a URL do seu Firebase Realtime Database (ex: "https://seu-projeto-default-rtdb.firebaseio.com")
+  const FIREBASE_DB_URL = "";
+  const FIREBASE_NODE = "dr_limpeza";
+
+  // ==================== ATALHOS PADRÃO ====================
+  const ATALHOS_PADRAO = [
+    { desc: 'Sofá 2 Lugares', val: 160 },
+    { desc: 'Sofá 3 Lugares', val: 200 },
+    { desc: 'Sofá Retrátil', val: 250 },
+    { desc: 'Colchão Casal', val: 150 },
+    { desc: 'Colchão Solteiro', val: 110 },
+    { desc: 'Cadeira Estofada', val: 35 },
+    { desc: 'Impermeabilização', val: 180 },
+    { desc: 'Bancos Carro', val: 180 }
+  ];
+
   // ==================== ESTADO & STORAGE ====================
   let itensOrcamento = [];
   let editandoId = null;
-  let dbData = { orcamentos: {}, lancamentos: {} };
+  let dbData = {
+    orcamentos: {},
+    lancamentos: {},
+    atalhos: [...ATALHOS_PADRAO]
+  };
 
   const hojeISO = () => new Date().toISOString().split('T')[0];
   document.getElementById('orcData').value = hojeISO();
@@ -479,6 +506,51 @@
     const [y, m, d] = iso.split('-');
     return `${d}/${m}/${y.slice(2)}`;
   };
+
+  // ==================== ATALHOS (CADASTRAR E APAGAR) ====================
+  function renderAtalhos() {
+    const container = document.getElementById('quickChipsContainer');
+    const lista = dbData.atalhos || [];
+    if (lista.length === 0) {
+      container.innerHTML = '<span style="font-size:0.78rem;color:var(--muted);">Nenhum atalho cadastrado. Clique em "+ Novo Atalho" acima.</span>';
+      return;
+    }
+    container.innerHTML = lista.map((a, idx) => `
+      <span class="chip-wrap">
+        <button type="button" class="chip-btn" onclick="quickAdd('${a.desc.replace(/'/g, "\'")}', ${a.val})">+ ${a.desc} (R$${a.val})</button>
+        <button type="button" class="chip-del" onclick="removerAtalho(${idx})" title="Apagar atalho">✕</button>
+      </span>
+    `).join('');
+  }
+
+  function openAtalhoModal() {
+    document.getElementById('novoAtalhoNome').value = '';
+    document.getElementById('novoAtalhoVal').value = '';
+    document.getElementById('atalhoModal').classList.add('open');
+  }
+
+  function closeAtalhoModal() {
+    document.getElementById('atalhoModal').classList.remove('open');
+  }
+
+  async function salvarNovoAtalho() {
+    const desc = document.getElementById('novoAtalhoNome').value.trim();
+    const val = parseFloat(document.getElementById('novoAtalhoVal').value) || 0;
+    if (!desc || val <= 0) return alert('Preencha o nome e o valor.');
+    if (!dbData.atalhos) dbData.atalhos = [];
+    dbData.atalhos.push({ desc, val });
+    closeAtalhoModal();
+    renderAtalhos();
+    await syncSave();
+  }
+
+  async function removerAtalho(idx) {
+    const item = dbData.atalhos[idx];
+    if (!confirm(`Apagar o botão "${item.desc}"?`)) return;
+    dbData.atalhos.splice(idx, 1);
+    renderAtalhos();
+    await syncSave();
+  }
 
   // ==================== NAVEGAÇÃO ====================
   function switchTab(tab, btn) {
@@ -582,7 +654,7 @@
 `;
     msg += `👤 *Cliente:* ${nome}
 `;
-    msg += `📅 *Data:* ${data}
+    msg += `📅 *Data:* ${data} _(Orçamento válido por 10 dias)_
 
 `;
     msg += `*Serviços:*
@@ -627,7 +699,6 @@ Subtotal: ${fmtMoeda(sub)}
 
     dbData.orcamentos[id] = registro;
 
-    // Se concluído, lança automaticamente no caixa se ainda não foi lançado
     if (status === 'concluido') {
       const finId = 'fin_' + id;
       dbData.lancamentos[finId] = {
@@ -772,84 +843,63 @@ Subtotal: ${fmtMoeda(sub)}
     renderHistorico();
   }
 
-  // ==================== FIREBASE REST SYNC (LEVE E SEM SDK PESADO) ====================
-  function getFbConfig() {
-    return {
-      url: (localStorage.getItem('drlimpeza_fb_url') || '').replace(/\/$/, ''),
-      node: localStorage.getItem('drlimpeza_fb_node') || 'dr_limpeza'
-    };
-  }
-
-  function openConfigModal() {
-    const cfg = getFbConfig();
-    document.getElementById('cfgDbUrl').value = cfg.url;
-    document.getElementById('cfgNode').value = cfg.node;
-    document.getElementById('configModal').classList.add('open');
-  }
-
-  function closeConfigModal() {
-    document.getElementById('configModal').classList.remove('open');
-  }
-
-  async function salvarConfigFirebase() {
-    let raw = document.getElementById('cfgDbUrl').value.trim();
-    // Extrai databaseURL caso o usuário cole o objeto firebaseConfig inteiro
-    const match = raw.match(/https:\/\/[a-zA-Z0-9-]+\.firebaseio\.com|https:\/\/[a-zA-Z0-9-]+\.firebasedatabase\.app/);
-    if (match) raw = match[0];
-
-    const node = document.getElementById('cfgNode').value.trim() || 'dr_limpeza';
-    localStorage.setItem('drlimpeza_fb_url', raw);
-    localStorage.setItem('drlimpeza_fb_node', node);
-    closeConfigModal();
-    await syncLoad();
-  }
-
+  // ==================== FIREBASE REST SYNC ====================
   async function syncLoad() {
-    // Carrega cache local primeiro para resposta instantânea
     const local = localStorage.getItem('drlimpeza_data');
     if (local) {
-      try { dbData = JSON.parse(local); } catch (e) {}
+      try {
+        const parsed = JSON.parse(local);
+        dbData = {
+          orcamentos: parsed.orcamentos || {},
+          lancamentos: parsed.lancamentos || {},
+          atalhos: Array.isArray(parsed.atalhos) ? parsed.atalhos : [...ATALHOS_PADRAO]
+        };
+      } catch (e) {}
     }
 
-    const cfg = getFbConfig();
+    renderAtalhos();
+    renderFinanceiro();
+
+    const url = FIREBASE_DB_URL.replace(/\/$/, '');
     const badge = document.getElementById('syncStatus');
-    if (!cfg.url) {
-      badge.textContent = 'Local (Config. Firebase)';
+    if (!url) {
+      badge.textContent = 'Local';
       badge.className = 'sync-badge sync-warn';
-      renderFinanceiro();
       return;
     }
 
     try {
       badge.textContent = 'Sincronizando...';
-      const res = await fetch(`${cfg.url}/${cfg.node}.json`);
+      const res = await fetch(`${url}/${FIREBASE_NODE}.json`);
       if (!res.ok) throw new Error('Erro HTTP');
       const remote = await res.json();
       if (remote) {
         dbData = {
           orcamentos: remote.orcamentos || {},
-          lancamentos: remote.lancamentos || {}
+          lancamentos: remote.lancamentos || {},
+          atalhos: Array.isArray(remote.atalhos) ? remote.atalhos : dbData.atalhos
         };
         localStorage.setItem('drlimpeza_data', JSON.stringify(dbData));
+        renderAtalhos();
+        renderFinanceiro();
       }
       badge.textContent = 'Firebase OK';
       badge.className = 'sync-badge sync-ok';
     } catch (e) {
-      badge.textContent = 'Offline (Local)';
+      badge.textContent = 'Offline';
       badge.className = 'sync-badge sync-warn';
     }
-    renderFinanceiro();
   }
 
   async function syncSave() {
     localStorage.setItem('drlimpeza_data', JSON.stringify(dbData));
-    const cfg = getFbConfig();
+    const url = FIREBASE_DB_URL.replace(/\/$/, '');
     const badge = document.getElementById('syncStatus');
-    if (!cfg.url) return;
+    if (!url) return;
 
     try {
       badge.textContent = 'Salvando...';
-      const res = await fetch(`${cfg.url}/${cfg.node}.json`, {
+      const res = await fetch(`${url}/${FIREBASE_NODE}.json`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dbData)
@@ -858,7 +908,7 @@ Subtotal: ${fmtMoeda(sub)}
       badge.textContent = 'Firebase OK';
       badge.className = 'sync-badge sync-ok';
     } catch (e) {
-      badge.textContent = 'Erro Sync (Salvo Local)';
+      badge.textContent = 'Offline';
       badge.className = 'sync-badge sync-warn';
     }
   }
