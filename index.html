@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Dr. Limpeza - Orçamentos & Financeiro</title>
+<title>Doutor Limpeza - Orçamentos, Agenda & Financeiro</title>
 <style>
   :root {
     --primary: #121619;
@@ -15,8 +15,8 @@
     --text: #121619;
     --muted: #525b56;
     --border: #cbd5d0;
-    --green: #3f7d00;
-    --green-bg: #ecfccb;
+    --green: #15803d;
+    --green-bg: #dcfce7;
     --red: #b91c1c;
     --red-bg: #fee2e2;
     --blue: #3f7d00;
@@ -29,11 +29,11 @@
   header {
     background: var(--primary);
     color: #fff;
-    padding: 12px 16px;
+    padding: 12px 14px;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
   }
   .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .brand-wrap { display: flex; flex-direction: column; }
@@ -43,19 +43,19 @@
   .sync-ok { background: #16a34a; color: #fff; }
   .sync-warn { background: #d97706; color: #fff; }
 
-  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
   .tab-btn {
     background: rgba(255,255,255,0.12);
     border: none;
     color: #e2e8f0;
-    padding: 8px 4px;
+    padding: 8px 2px;
     border-radius: 6px;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.74rem;
     cursor: pointer;
     transition: 0.15s;
   }
-  .tab-btn.active { background: #8ce000; color: #121619; }
+  .tab-btn.active { background: #8ce000; color: #121619; font-weight: 900; }
 
   /* Containers */
   .container { max-width: 720px; margin: 0 auto; padding: 12px; }
@@ -70,7 +70,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     border: 1px solid #e2e8f0;
   }
-  .card-title { font-size: 0.95rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+  .card-title { font-size: 0.92rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
 
   /* Forms */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -92,22 +92,22 @@
   .btn {
     border: none;
     border-radius: 6px;
-    padding: 10px 14px;
+    padding: 10px 12px;
     font-weight: 700;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
     transition: 0.15s;
   }
   .btn-primary { background: var(--primary); color: #8ce000; width: 100%; }
   .btn-primary:active { background: var(--primary-dark); }
   .btn-accent { background: #8ce000; color: #121619; font-weight: 800; }
-  .btn-whatsapp { background: #8ce000; color: #121619; font-weight: 900; width: 100%; font-size: 0.95rem; padding: 12px; }
+  .btn-whatsapp { background: #8ce000; color: #121619; font-weight: 900; width: 100%; font-size: 0.92rem; padding: 12px; }
   .btn-outline { background: #fff; border: 1px solid var(--border); color: var(--text); }
-  .btn-sm { padding: 5px 9px; font-size: 0.78rem; }
+  .btn-sm { padding: 5px 8px; font-size: 0.76rem; }
   .btn-danger { background: var(--red-bg); color: var(--red); }
 
   /* Excel-style Tables */
@@ -150,6 +150,93 @@
   .kpi-title { font-size: 0.7rem; font-weight: 800; color: var(--muted); text-transform: uppercase; }
   .kpi-val { font-size: 1.05rem; font-weight: 900; margin-top: 4px; }
 
+  /* ==================== AGENDA VISUAL (GRADE SEMANAL) ==================== */
+  .agenda-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #121619;
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  .agenda-nav button {
+    background: rgba(255,255,255,0.14);
+    border: none;
+    color: #8ce000;
+    font-weight: 900;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+  }
+  .agenda-week-title { font-size: 0.85rem; font-weight: 800; text-align: center; color: #fff; }
+  .agenda-legend { display: flex; gap: 12px; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; justify-content: center; }
+  .leg-item { display: flex; align-items: center; gap: 5px; }
+  .leg-box { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+
+  .agenda-grid-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+  .agenda-table { width: 100%; border-collapse: collapse; min-width: 480px; }
+  .agenda-table th {
+    background: #121619;
+    color: #fff;
+    text-align: center;
+    padding: 7px 4px;
+    font-size: 0.74rem;
+    border: 1px solid #2a3137;
+    position: sticky;
+    top: 0;
+  }
+  .agenda-table th.col-hora { width: 54px; background: #1e2429; color: #8ce000; }
+  .agenda-table td {
+    border: 1px solid #cbd5d0;
+    padding: 3px;
+    height: 46px;
+    vertical-align: middle;
+    text-align: center;
+  }
+  .agenda-table td.hora-cell {
+    background: #f8fafc;
+    font-weight: 800;
+    font-size: 0.76rem;
+    color: #121619;
+  }
+  .slot-btn {
+    width: 100%;
+    height: 100%;
+    min-height: 40px;
+    border-radius: 6px;
+    border: none;
+    padding: 4px 3px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.15;
+    transition: 0.12s;
+  }
+  .slot-livre {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+  }
+  .slot-livre:active { background: #bbf7d0; }
+  .slot-ocupado {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+  }
+  .slot-aprovado {
+    background: #121619;
+    color: #8ce000;
+    border: 1px solid #8ce000;
+  }
+  .slot-sub { font-size: 0.64rem; font-weight: 600; opacity: 0.9; max-width: 74px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
   /* Screenshot Mode (Tela do Print / Gerador de Imagem) */
   body.print-mode header, body.print-mode .no-print { display: none !important; }
   body.print-mode { background: #e2e8f0; padding: 0; }
@@ -176,7 +263,8 @@
 
   .quote-preview-banner {
     display: none;
-    background: linear-gradient(135deg, #121619 0%, #22292e 100%); border-bottom: 3px solid #8ce000;
+    background: linear-gradient(135deg, #121619 0%, #22292e 100%);
+    border-bottom: 3px solid #8ce000;
     color: #fff;
     padding: 14px 16px;
     border-radius: 8px;
@@ -232,6 +320,7 @@
   </div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('orcamento', this)">Orçamento</button>
+    <button class="tab-btn" onclick="switchTab('agenda', this)">Agenda</button>
     <button class="tab-btn" onclick="switchTab('produtos', this)">Produtos</button>
     <button class="tab-btn" onclick="switchTab('financeiro', this)">Caixa</button>
     <button class="tab-btn" onclick="switchTab('historico', this)">Histórico</button>
@@ -252,6 +341,7 @@
         <div style="text-align:right;font-size:0.78rem;">
           <div style="font-weight:800;">ORÇAMENTO</div>
           <div id="printDate">--/--/----</div>
+          <div id="printHora" style="font-weight:700;color:#8ce000;"></div>
           <div style="font-size:0.66rem;opacity:0.88;margin-top:2px;">Orçamento válido por 10 dias</div>
         </div>
       </div>
@@ -271,14 +361,28 @@
             <input type="tel" id="cliTel" placeholder="(15) 99999-9999">
           </div>
         </div>
+        <div class="form-group">
+          <label>Endereço</label>
+          <input type="text" id="cliEnd" placeholder="Ex: Rua das Flores, 123">
+        </div>
         <div class="grid-2">
-          <div class="form-group" style="margin-bottom:0;">
-            <label>Endereço</label>
-            <input type="text" id="cliEnd" placeholder="Ex: Rua das Flores, 123">
-          </div>
           <div class="form-group" style="margin-bottom:0;">
             <label>Data do Serviço</label>
             <input type="date" id="orcData">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Hora do Serviço</label>
+            <select id="orcHora">
+              <option value="08:00">08:00</option>
+              <option value="09:00" selected>09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="11:00">11:00</option>
+              <option value="13:00">13:00</option>
+              <option value="14:00">14:00</option>
+              <option value="15:00">15:00</option>
+              <option value="16:00">16:00</option>
+              <option value="17:00">17:00</option>
+            </select>
           </div>
         </div>
       </div>
@@ -352,15 +456,62 @@
         <div class="no-print" style="display:grid;gap:8px;margin-top:12px;">
           <button class="btn btn-whatsapp" onclick="togglePrintMode(true)">Gerar Tela do Print (Para Enviar no WhatsApp)</button>
           <div class="grid-2">
-            <button class="btn btn-primary" onclick="salvarOrcamento('orcamento')">Salvar Orçamento</button>
-            <button class="btn" style="background:#15803d;color:#fff;" onclick="salvarOrcamento('concluido')">Serviço Realizado</button>
+            <button class="btn btn-primary" onclick="salvarOrcamento('orcamento')">Salvar Aberto</button>
+            <button class="btn" style="background:#15803d;color:#fff;" onclick="salvarOrcamento('concluido')">Aprovado (Agendar)</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== ABA 2: CADASTRO DE PRODUTOS / SERVIÇOS ==================== -->
+  <!-- ==================== ABA 2: AGENDA ==================== -->
+  <div id="view-agenda" class="view">
+    <!-- PARTE 1: CONTROLE INTERATIVO DO PROFISSIONAL -->
+    <div class="card">
+      <div class="card-title">
+        <span>Controle de Horários</span>
+        <button class="btn btn-sm btn-accent" onclick="gerarPrintAgenda()">Print Agenda Livre</button>
+      </div>
+
+      <div class="agenda-nav">
+        <button onclick="mudarSemanaAgenda(-7)">◀ Anterior</button>
+        <div class="agenda-week-title" id="agendaSemanaTitulo">Semana</div>
+        <button onclick="mudarSemanaAgenda(7)">Próxima ▶</button>
+      </div>
+
+      <div class="agenda-legend">
+        <div class="leg-item"><span class="leg-box" style="background:#dcfce7;border:1px solid #86efac;"></span> Livre (clique p/ ocupar)</div>
+        <div class="leg-item"><span class="leg-box" style="background:#fee2e2;border:1px solid #fca5a5;"></span> ✕ Ocupado</div>
+        <div class="leg-item"><span class="leg-box" style="background:#121619;border:1px solid #8ce000;"></span> Aprovado</div>
+      </div>
+
+      <div class="agenda-grid-wrap">
+        <table class="agenda-table" id="agendaGridTable"></table>
+      </div>
+      <div style="font-size:0.73rem;color:var(--muted);margin-top:6px;text-align:center;">
+        Toque em um horário <strong>Livre (verde)</strong> para marcar como <strong>✕ Ocupado</strong> ou toque no ocupado para liberar.
+      </div>
+    </div>
+
+    <!-- PARTE 2: SERVIÇOS APROVADOS DA SEMANA -->
+    <div class="card">
+      <div class="card-title">Serviços Aprovados na Agenda</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Data / Hora</th>
+              <th>Cliente / Serviço</th>
+              <th class="num">Valor</th>
+            </tr>
+          </thead>
+          <tbody id="agendaAprovadosBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ABA 3: CADASTRO DE PRODUTOS / SERVIÇOS ==================== -->
   <div id="view-produtos" class="view">
     <div class="card">
       <div class="card-title">Cadastrar Novo Produto / Serviço</div>
@@ -394,7 +545,7 @@
     </div>
   </div>
 
-  <!-- ==================== ABA 3: CAIXA & LUCRO ==================== -->
+  <!-- ==================== ABA 4: CAIXA & LUCRO ==================== -->
   <div id="view-financeiro" class="view">
     <div class="kpi-grid">
       <div class="kpi">
@@ -460,7 +611,7 @@
     </div>
   </div>
 
-  <!-- ==================== ABA 4: HISTÓRICO DE ORÇAMENTOS ==================== -->
+  <!-- ==================== ABA 5: HISTÓRICO DE ORÇAMENTOS ==================== -->
   <div id="view-historico" class="view">
     <div class="card">
       <div class="card-title">Orçamentos & Serviços Salvos</div>
@@ -471,7 +622,7 @@
               <th>Data / Cliente</th>
               <th>Status</th>
               <th class="num">Total</th>
-              <th style="width:95px;text-align:right;">Ações</th>
+              <th style="width:130px;text-align:right;">Ações</th>
             </tr>
           </thead>
           <tbody id="histTableBody"></tbody>
@@ -500,16 +651,36 @@
     { desc: 'Bancos Carro', val: 180 }
   ];
 
+  const HORARIOS_AGENDA = ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+  const DIAS_SEMANA_CURTO = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
   // ==================== ESTADO & STORAGE ====================
   let itensOrcamento = [];
   let editandoId = null;
+  let agendaInicioSemana = getSegundaDaSemana(new Date());
   let dbData = {
     orcamentos: {},
     lancamentos: {},
-    atalhos: [...PRODUTOS_PADRAO]
+    atalhos: [...PRODUTOS_PADRAO],
+    bloqueiosAgenda: {} // chave "YYYY-MM-DD_HH:MM": true
   };
 
-  const hojeISO = () => new Date().toISOString().split('T')[0];
+  function getSegundaDaSemana(d) {
+    const dt = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const day = dt.getDay();
+    const diff = dt.getDate() - day + (day === 0 ? -6 : 1);
+    dt.setDate(diff);
+    return dt;
+  }
+
+  function toISODate(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  const hojeISO = () => toISODate(new Date());
   document.getElementById('orcData').value = hojeISO();
   document.getElementById('finData').value = hojeISO();
 
@@ -520,16 +691,282 @@
     return `${d}/${m}/${y.slice(2)}`;
   };
 
-  // ==================== CATÁLOGO DE PRODUTOS (DROPDOWN + ABA CADASTRO) ====================
+  // ==================== AGENDA VISUAL & BLOQUEIOS ====================
+  function getDiasSemanaAtual() {
+    const dias = [];
+    for (let i = 0; i < 6; i++) { // Seg a Sáb
+      const dt = new Date(agendaInicioSemana);
+      dt.setDate(agendaInicioSemana.getDate() + i);
+      dias.push(dt);
+    }
+    return dias;
+  }
+
+  function mudarSemanaAgenda(deltaDias) {
+    agendaInicioSemana.setDate(agendaInicioSemana.getDate() + deltaDias);
+    renderAgenda();
+  }
+
+  function getAprovadosMap() {
+    const map = {};
+    Object.values(dbData.orcamentos || {}).forEach(o => {
+      if (o.status === 'concluido' && o.data) {
+        const hora = o.hora || '09:00';
+        map[`${o.data}_${hora}`] = o;
+      }
+    });
+    return map;
+  }
+
+  async function toggleBloqueioAgenda(key) {
+    if (!dbData.bloqueiosAgenda) dbData.bloqueiosAgenda = {};
+    if (dbData.bloqueiosAgenda[key]) {
+      delete dbData.bloqueiosAgenda[key];
+    } else {
+      dbData.bloqueiosAgenda[key] = true;
+    }
+    renderAgenda();
+    await syncSave();
+  }
+
+  function renderAgenda() {
+    const dias = getDiasSemanaAtual();
+    const aprovadosMap = getAprovadosMap();
+    const bloqueios = dbData.bloqueiosAgenda || {};
+
+    const iniStr = fmtDataBR(toISODate(dias[0]));
+    const fimStr = fmtDataBR(toISODate(dias[dias.length - 1]));
+    document.getElementById('agendaSemanaTitulo').textContent = `${iniStr} a ${fimStr}`;
+
+    const tbl = document.getElementById('agendaGridTable');
+    let html = `<thead><tr><th class="col-hora">Hora</th>`;
+    dias.forEach(d => {
+      const diaNome = DIAS_SEMANA_CURTO[d.getDay()];
+      const diaNum = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+      html += `<th>${diaNome}<br><span style="font-weight:600;color:#8ce000;">${diaNum}</span></th>`;
+    });
+    html += `</tr></thead><tbody>`;
+
+    HORARIOS_AGENDA.forEach(hora => {
+      html += `<tr><td class="hora-cell">${hora}</td>`;
+      dias.forEach(d => {
+        const iso = toISODate(d);
+        const key = `${iso}_${hora}`;
+        const aprovado = aprovadosMap[key];
+        const bloqueado = bloqueios[key];
+
+        if (aprovado) {
+          html += `<td>
+            <button type="button" class="slot-btn slot-aprovado" onclick="carregarOrcamento('${aprovado.id}')" title="Aprovado: ${aprovado.nome}">
+              <span>✓ Aprovado</span>
+              <span class="slot-sub">${aprovado.nome}</span>
+            </button>
+          </td>`;
+        } else if (bloqueado) {
+          html += `<td>
+            <button type="button" class="slot-btn slot-ocupado" onclick="toggleBloqueioAgenda('${key}')">
+              <span>✕ Ocupado</span>
+            </button>
+          </td>`;
+        } else {
+          html += `<td>
+            <button type="button" class="slot-btn slot-livre" onclick="toggleBloqueioAgenda('${key}')">
+              <span>Livre</span>
+            </button>
+          </td>`;
+        }
+      });
+      html += `</tr>`;
+    });
+    html += `</tbody>`;
+    tbl.innerHTML = html;
+
+    // Tabela inferior: Serviços Aprovados
+    const tbody = document.getElementById('agendaAprovadosBody');
+    const listaAprovados = Object.values(dbData.orcamentos || {})
+      .filter(o => o.status === 'concluido')
+      .sort((a, b) => `${a.data}_${a.hora || '09:00'}`.localeCompare(`${b.data}_${b.hora || '09:00'}`));
+
+    if (listaAprovados.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:14px;">Nenhum orçamento aprovado agendado ainda.</td></tr>';
+    } else {
+      tbody.innerHTML = listaAprovados.map(o => `
+        <tr onclick="carregarOrcamento('${o.id}')" style="cursor:pointer;">
+          <td style="white-space:nowrap;"><strong>${fmtDataBR(o.data)}</strong><br><span style="font-size:0.75rem;color:var(--green);font-weight:800;">${o.hora || '09:00'}</span></td>
+          <td><strong>${o.nome}</strong><br><span style="font-size:0.75rem;color:var(--muted);">${(o.itens || []).map(i => i.desc).join(', ')}</span></td>
+          <td class="num">${fmtMoeda(o.total)}</td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  // ==================== GERAR IMAGEM DO PRINT DA AGENDA (SEM NOMES DE CLIENTES) ====================
+  function gerarPrintAgenda() {
+    const dias = getDiasSemanaAtual();
+    const aprovadosMap = getAprovadosMap();
+    const bloqueios = dbData.bloqueiosAgenda || {};
+
+    const scale = 2;
+    const width = 620;
+    const pad = 20;
+    const innerW = width - pad * 2;
+    const rowH = 38;
+    const headerH = 92;
+    const tableTop = pad + headerH + 14;
+    const tableHeaderH = 42;
+    const height = tableTop + tableHeaderH + (HORARIOS_AGENDA.length * rowH) + 52;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width * scale;
+    canvas.height = height * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+
+    // Cabeçalho Preto Grafite + Verde Limão
+    roundRect(ctx, pad, pad, innerW, headerH, 12);
+    ctx.fillStyle = '#121619';
+    ctx.fill();
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#8ce000';
+    ctx.font = '900 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('DOUTOR LIMPEZA', pad + 16, pad + 32);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('WhatsApp: (15) 99735-3390', pad + 16, pad + 52);
+
+    ctx.fillStyle = '#d9f99d';
+    ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('Escolha um horário livre e nos avise para reservar!', pad + 16, pad + 72);
+
+    const iniStr = fmtDataBR(toISODate(dias[0]));
+    const fimStr = fmtDataBR(toISODate(dias[dias.length - 1]));
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#8ce000';
+    ctx.font = '800 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('DISPONIBILIDADE', width - pad - 16, pad + 34);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`${iniStr} a ${fimStr}`, width - pad - 16, pad + 54);
+
+    // Grade
+    const horaColW = 64;
+    const dayColW = (innerW - horaColW) / dias.length;
+
+    // Cabeçalho da Tabela
+    ctx.fillStyle = '#121619';
+    ctx.fillRect(pad, tableTop, innerW, tableHeaderH);
+
+    ctx.fillStyle = '#8ce000';
+    ctx.font = '800 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('HORA', pad + horaColW / 2, tableTop + 25);
+
+    dias.forEach((d, idx) => {
+      const cx = pad + horaColW + idx * dayColW + dayColW / 2;
+      const diaNome = DIAS_SEMANA_CURTO[d.getDay()].toUpperCase();
+      const diaNum = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(diaNome, cx, tableTop + 17);
+      ctx.fillStyle = '#8ce000';
+      ctx.font = '700 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(diaNum, cx, tableTop + 33);
+    });
+
+    // Linhas
+    HORARIOS_AGENDA.forEach((hora, rIdx) => {
+      const y = tableTop + tableHeaderH + rIdx * rowH;
+
+      // Célula Hora
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(pad, y, horaColW, rowH);
+      ctx.strokeStyle = '#cbd5d0';
+      ctx.strokeRect(pad, y, horaColW, rowH);
+      ctx.fillStyle = '#121619';
+      ctx.font = '800 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(hora, pad + horaColW / 2, y + 23);
+
+      dias.forEach((d, cIdx) => {
+        const x = pad + horaColW + cIdx * dayColW;
+        const iso = toISODate(d);
+        const key = `${iso}_${hora}`;
+        // Tanto aprovado quanto bloqueado aparecem apenas como "OCUPADO" sem nome de cliente
+        const isOcupado = Boolean(aprovadosMap[key] || bloqueios[key]);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x, y, dayColW, rowH);
+        ctx.strokeStyle = '#cbd5d0';
+        ctx.strokeRect(x, y, dayColW, rowH);
+
+        // Pílula interna
+        const m = 4;
+        roundRect(ctx, x + m, y + m, dayColW - m * 2, rowH - m * 2, 6);
+        if (isOcupado) {
+          ctx.fillStyle = '#fee2e2';
+          ctx.fill();
+          ctx.fillStyle = '#b91c1c';
+          ctx.font = '800 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+          ctx.fillText('OCUPADO', x + dayColW / 2, y + 23);
+        } else {
+          ctx.fillStyle = '#dcfce7';
+          ctx.fill();
+          ctx.fillStyle = '#15803d';
+          ctx.font = '800 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+          ctx.fillText('LIVRE', x + dayColW / 2, y + 23);
+        }
+      });
+    });
+
+    // Rodapé legenda
+    const footY = tableTop + tableHeaderH + HORARIOS_AGENDA.length * rowH + 22;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#525b56';
+    ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('Horários em VERDE estão disponíveis para agendamento.', width / 2, footY);
+
+    canvas.toBlob(async (blob) => {
+      const fileName = `Agenda_DoutorLimpeza_${iniStr.replace(/\//g, '-')}.png`;
+      const file = new File([blob], fileName, { type: 'image/png' });
+
+      try {
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        }
+      } catch (e) {}
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Agenda Doutor Limpeza',
+            text: 'Olá! Segue nossa agenda de horários disponíveis:'
+          });
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+    }, 'image/png');
+  }
+
+  // ==================== CATÁLOGO DE PRODUTOS ====================
   function renderProdutos() {
     const lista = dbData.atalhos || [];
-
-    // Atualiza o Select (dropdown com seta) na aba Orçamento
     const sel = document.getElementById('selectProdutoCatalogo');
     sel.innerHTML = `<option value="">-- Clique para escolher da lista (${lista.length}) --</option>` +
       lista.map((p, idx) => `<option value="${idx}">${p.desc} — ${fmtMoeda(p.val)}</option>`).join('');
 
-    // Atualiza a tabela na aba Produtos
     const tbody = document.getElementById('prodTableBody');
     if (lista.length === 0) {
       tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:14px;">Nenhum produto ou serviço cadastrado.</td></tr>';
@@ -585,6 +1022,7 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('view-' + tab).classList.add('active');
     btn.classList.add('active');
+    if (tab === 'agenda') renderAgenda();
     if (tab === 'produtos') renderProdutos();
     if (tab === 'financeiro') renderFinanceiro();
     if (tab === 'historico') renderHistorico();
@@ -596,6 +1034,7 @@
     }
     document.body.classList.toggle('print-mode', enable);
     document.getElementById('printDate').textContent = fmtDataBR(document.getElementById('orcData').value);
+    document.getElementById('printHora').textContent = 'Horário: ' + document.getElementById('orcHora').value;
     const obs = document.getElementById('orcObs').value.trim();
     const obsBox = document.getElementById('obsPrintBox');
     if (enable && obs) {
@@ -607,7 +1046,7 @@
     if (enable) window.scrollTo(0, 0);
   }
 
-  // ==================== GERAR IMAGEM BONITA DO ORÇAMENTO (CANVAS NATIVO) ====================
+  // ==================== GERAR IMAGEM BONITA DO ORÇAMENTO ====================
   function roundRect(ctx, x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -623,6 +1062,7 @@
     const tel = document.getElementById('cliTel').value.trim();
     const end = document.getElementById('cliEnd').value.trim();
     const data = fmtDataBR(document.getElementById('orcData').value);
+    const hora = document.getElementById('orcHora').value;
     const obs = document.getElementById('orcObs').value.trim();
     const { sub, desc, total } = calcTotalOrcamento();
 
@@ -645,15 +1085,14 @@
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
-    // Cabeçalho Azul
     roundRect(ctx, pad, pad, innerW, 96, 12);
     ctx.fillStyle = '#121619';
     ctx.fill();
 
-    ctx.fillStyle = '#ffffff';
     ctx.font = '800 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#8ce000'; ctx.fillText('DOUTOR LIMPEZA', pad + 18, pad + 35);
+    ctx.fillStyle = '#8ce000';
+    ctx.fillText('DOUTOR LIMPEZA', pad + 18, pad + 35);
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -666,16 +1105,16 @@
     ctx.textAlign = 'right';
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('ORÇAMENTO', width - pad - 18, pad + 35);
+    ctx.fillText('ORÇAMENTO', width - pad - 18, pad + 32);
 
-    ctx.font = '600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText(data, width - pad - 18, pad + 55);
+    ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = '#8ce000';
+    ctx.fillText(`${data} às ${hora}`, width - pad - 18, pad + 52);
 
     ctx.fillStyle = '#e0f2fe';
     ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('Orçamento válido por 10 dias', width - pad - 18, pad + 74);
+    ctx.fillText('Orçamento válido por 10 dias', width - pad - 18, pad + 72);
 
-    // Bloco Dados do Cliente
     let y = pad + 112;
     const clientBoxH = end ? 88 : 64;
     roundRect(ctx, pad, y, innerW, clientBoxH, 10);
@@ -708,7 +1147,6 @@
       ctx.fillText(`Endereço: ${end}`, pad + 14, y + 66);
     }
 
-    // Cabeçalho da Tabela de Itens
     y += clientBoxH + 16;
     roundRect(ctx, pad, y, innerW, 34, 6);
     ctx.fillStyle = '#e2e8f0';
@@ -723,7 +1161,6 @@
     ctx.textAlign = 'right';
     ctx.fillText('SUBTOTAL', width - pad - 12, y + 21);
 
-    // Linhas dos Itens
     y += 38;
     itensOrcamento.forEach((item, index) => {
       if (index % 2 === 1) {
@@ -800,26 +1237,24 @@
     ctx.fillText(fmtMoeda(total), width - pad - 16, y + 36);
 
     canvas.toBlob(async (blob) => {
-      const fileName = `Orcamento_DrLimpeza_${nome.replace(/\s+/g, '_')}.png`;
+      const fileName = `Orcamento_DoutorLimpeza_${nome.replace(/\s+/g, '_')}.png`;
       const file = new File([blob], fileName, { type: 'image/png' });
       const telRaw = document.getElementById('cliTel').value.replace(/\D/g, '');
       const phoneParam = telRaw.length >= 10 ? (telRaw.startsWith('55') ? telRaw : '55' + telRaw) : '';
       const waUrl = phoneParam ? `https://wa.me/${phoneParam}` : `https://wa.me/`;
 
-      // Copia a imagem para a área de transferência (permite colar direto no WhatsApp Web/Desktop ou teclado do celular)
       try {
         if (navigator.clipboard && window.ClipboardItem) {
           await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
         }
       } catch (e) {}
 
-      // No celular: abre o compartilhamento nativo com a foto já anexada (escolhe WhatsApp e o contato)
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
           await navigator.share({
             files: [file],
-            title: 'Orçamento Dr. Limpeza',
-            text: `Olá ${nome}, segue o seu orçamento da Dr. Limpeza!`
+            title: 'Orçamento Doutor Limpeza',
+            text: `Olá ${nome}, segue o seu orçamento da Doutor Limpeza!`
           });
           return;
         } catch (err) {
@@ -827,7 +1262,6 @@
         }
       }
 
-      // Fallback (PC ou navegador sem share de arquivo): baixa a imagem e abre a conversa no WhatsApp do telefone cadastrado
       const link = document.createElement('a');
       link.download = fileName;
       link.href = URL.createObjectURL(blob);
@@ -890,6 +1324,7 @@
     document.getElementById('orcDesc').value = '0';
     document.getElementById('orcObs').value = '';
     document.getElementById('orcData').value = hojeISO();
+    document.getElementById('orcHora').value = '09:00';
     renderItens();
   }
 
@@ -899,12 +1334,13 @@
     const tel = document.getElementById('cliTel').value.trim();
     const end = document.getElementById('cliEnd').value.trim();
     const data = document.getElementById('orcData').value || hojeISO();
+    const hora = document.getElementById('orcHora').value || '09:00';
     const obs = document.getElementById('orcObs').value.trim();
     const { desc, total } = calcTotalOrcamento();
 
     const id = editandoId || ('orc_' + Date.now());
     const registro = {
-      id, nome, tel, end, data, obs, desc, total, status,
+      id, nome, tel, end, data, hora, obs, desc, total, status,
       itens: [...itensOrcamento],
       updatedAt: Date.now()
     };
@@ -920,11 +1356,36 @@
         desc: `Serviço: ${nome} (${itensOrcamento.map(i => i.desc).join(', ')})`,
         valor: total
       };
+      // Ajusta semana da agenda para a data agendada
+      const [y, m, d] = data.split('-').map(Number);
+      agendaInicioSemana = getSegundaDaSemana(new Date(y, m - 1, d));
     }
 
     await syncSave();
-    alert(status === 'concluido' ? 'Serviço salvo e receita lançada no caixa!' : 'Orçamento salvo com sucesso!');
+    renderAgenda();
+    alert(status === 'concluido'
+      ? `Orçamento APROVADO! Agendado na aba Agenda (${fmtDataBR(data)} às ${hora}) e lançado no caixa.`
+      : 'Orçamento salvo como ABERTO (ainda não ocupa horário na agenda).');
     novoOrcamento();
+  }
+
+  async function aprovarOrcamentoHistorico(id) {
+    const o = dbData.orcamentos[id];
+    if (!o) return;
+    o.status = 'concluido';
+    o.updatedAt = Date.now();
+    const finId = 'fin_' + id;
+    dbData.lancamentos[finId] = {
+      id: finId,
+      tipo: 'receita',
+      data: o.data,
+      desc: `Serviço: ${o.nome} (${(o.itens || []).map(i => i.desc).join(', ')})`,
+      valor: o.total
+    };
+    await syncSave();
+    renderHistorico();
+    renderAgenda();
+    alert(`Orçamento de ${o.nome} APROVADO e incluído na Agenda!`);
   }
 
   // ==================== FINANCEIRO ====================
@@ -1017,15 +1478,16 @@
       <tr>
         <td>
           <strong>${o.nome}</strong><br>
-          <span style="font-size:0.75rem;color:var(--muted);">${fmtDataBR(o.data)} • ${(o.itens || []).length} item(ns)</span>
+          <span style="font-size:0.75rem;color:var(--muted);">${fmtDataBR(o.data)} às ${o.hora || '09:00'} • ${(o.itens || []).length} item(ns)</span>
         </td>
         <td>
           <span class="badge-status ${o.status === 'concluido' ? 'st-ok' : 'st-orc'}">
-            ${o.status === 'concluido' ? 'Concluído' : 'Orçamento'}
+            ${o.status === 'concluido' ? 'Aprovado' : 'Aberto'}
           </span>
         </td>
         <td class="num">${fmtMoeda(o.total)}</td>
         <td style="text-align:right;white-space:nowrap;">
+          ${o.status !== 'concluido' ? `<button class="btn btn-sm btn-accent" onclick="aprovarOrcamentoHistorico('${o.id}')" title="Aprovar">✓</button>` : ''}
           <button class="btn btn-sm btn-outline" onclick="carregarOrcamento('${o.id}')" title="Abrir">Editar</button>
           <button class="btn btn-sm btn-danger" onclick="excluirOrcamento('${o.id}')" title="Excluir">✕</button>
         </td>
@@ -1041,6 +1503,7 @@
     document.getElementById('cliTel').value = o.tel || '';
     document.getElementById('cliEnd').value = o.end || '';
     document.getElementById('orcData').value = o.data || hojeISO();
+    document.getElementById('orcHora').value = o.hora || '09:00';
     document.getElementById('orcDesc').value = o.desc || 0;
     document.getElementById('orcObs').value = o.obs || '';
     itensOrcamento = JSON.parse(JSON.stringify(o.itens || []));
@@ -1053,6 +1516,7 @@
     delete dbData.orcamentos[id];
     await syncSave();
     renderHistorico();
+    renderAgenda();
   }
 
   // ==================== FIREBASE REST SYNC ====================
@@ -1064,13 +1528,15 @@
         dbData = {
           orcamentos: parsed.orcamentos || {},
           lancamentos: parsed.lancamentos || {},
-          atalhos: Array.isArray(parsed.atalhos) ? parsed.atalhos : [...PRODUTOS_PADRAO]
+          atalhos: Array.isArray(parsed.atalhos) ? parsed.atalhos : [...PRODUTOS_PADRAO],
+          bloqueiosAgenda: parsed.bloqueiosAgenda || {}
         };
       } catch (e) {}
     }
 
     renderProdutos();
     renderFinanceiro();
+    renderAgenda();
 
     const url = FIREBASE_DB_URL.replace(/\/$/, '');
     const badge = document.getElementById('syncStatus');
@@ -1089,11 +1555,13 @@
         dbData = {
           orcamentos: remote.orcamentos || {},
           lancamentos: remote.lancamentos || {},
-          atalhos: Array.isArray(remote.atalhos) ? remote.atalhos : dbData.atalhos
+          atalhos: Array.isArray(remote.atalhos) ? remote.atalhos : dbData.atalhos,
+          bloqueiosAgenda: remote.bloqueiosAgenda || {}
         };
         localStorage.setItem('drlimpeza_data', JSON.stringify(dbData));
         renderProdutos();
         renderFinanceiro();
+        renderAgenda();
       }
       badge.textContent = 'Firebase OK';
       badge.className = 'sync-badge sync-ok';
