@@ -39,6 +39,85 @@
   .brand-wrap { display: flex; flex-direction: column; }
   .brand { font-size: 1.15rem; font-weight: 900; letter-spacing: 0.3px; color: #8ce000; }
   .brand-sub { font-size: 0.78rem; color: #ffffff; font-weight: 600; margin-top: 1px; }
+  .brand-row { display: flex; align-items: center; gap: 8px; position: relative; }
+  .notif-wrap { position: relative; display: inline-flex; align-items: center; }
+  .notif-btn {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(140,224,0,0.4);
+    color: #8ce000;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+  }
+  .notif-btn:active { background: rgba(255,255,255,0.22); }
+  .notif-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 900;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    border-radius: 10px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #121619;
+  }
+  .notif-dropdown {
+    display: none;
+    position: absolute;
+    top: 34px;
+    left: 0;
+    width: 285px;
+    max-width: 86vw;
+    background: #ffffff;
+    color: #121619;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.32);
+    border: 1px solid #cbd5d0;
+    z-index: 300;
+    overflow: hidden;
+  }
+  .notif-dropdown.open { display: block; }
+  .notif-header {
+    background: #121619;
+    color: #8ce000;
+    padding: 8px 12px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .notif-clear-btn {
+    background: transparent;
+    border: none;
+    color: #e2e8f0;
+    font-size: 0.68rem;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .notif-list { max-height: 260px; overflow-y: auto; }
+  .notif-item {
+    padding: 9px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: 0.12s;
+  }
+  .notif-item:hover, .notif-item:active { background: #ecfccb; }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-empty { padding: 14px; text-align: center; color: #525b56; font-size: 0.78rem; }
   .sync-badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; background: rgba(255,255,255,0.18); font-weight: 600; }
   .sync-ok { background: #16a34a; color: #fff; }
   .sync-warn { background: #d97706; color: #fff; }
@@ -319,7 +398,22 @@
 <header>
   <div class="top-bar">
     <div class="brand-wrap">
-      <div class="brand">DOUTOR LIMPEZA</div>
+      <div class="brand-row">
+        <div class="brand">DOUTOR LIMPEZA</div>
+        <div class="notif-wrap" id="notifWrap">
+          <button type="button" class="notif-btn" onclick="toggleNotifDropdown(event)" title="Notificações de Orçamentos Aprovados">
+            <svg style="width:15px;height:15px;fill:currentColor;" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4a2 2 0 0 0 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            <span class="notif-count" id="notifCount">0</span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown" onclick="event.stopPropagation()">
+            <div class="notif-header">
+              <span>Orçamentos Aprovados</span>
+              <button type="button" class="notif-clear-btn" onclick="limparNotificacoes()">Limpar</button>
+            </div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+      </div>
       <div class="brand-sub"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;fill:#25D366;" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-5.825 4.74-10.563 10.564-10.563 5.826 0 10.564 4.738 10.564 10.564 0 5.826-4.74 10.562-10.567 10.562z"/></svg>(15) 99735-3390 - Marcel</div>
     </div>
     <span id="syncStatus" class="sync-badge sync-warn">Local</span>
@@ -677,8 +771,82 @@
     orcamentos: {},
     lancamentos: {},
     atalhos: [...PRODUTOS_PADRAO],
-    bloqueiosAgenda: {} // chave "YYYY-MM-DD_HH:MM": true
+    bloqueiosAgenda: {}, // chave "YYYY-MM-DD_HH:MM": true
+    notificacoes: []
   };
+
+  function toggleNotifDropdown(e) {
+    if (e) e.stopPropagation();
+    const dd = document.getElementById('notifDropdown');
+    dd.classList.toggle('open');
+  }
+
+  document.addEventListener('click', () => {
+    const dd = document.getElementById('notifDropdown');
+    if (dd) dd.classList.remove('open');
+  });
+
+  function renderNotificacoes() {
+    const lista = Array.isArray(dbData.notificacoes) ? dbData.notificacoes : [];
+    const badge = document.getElementById('notifCount');
+    const listEl = document.getElementById('notifList');
+    if (!badge || !listEl) return;
+
+    if (lista.length > 0) {
+      badge.textContent = lista.length;
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
+
+    if (lista.length === 0) {
+      listEl.innerHTML = '<div class="notif-empty">Nenhuma notificação no momento.</div>';
+      return;
+    }
+
+    listEl.innerHTML = lista.map((n, idx) => `
+      <div class="notif-item" onclick="abrirNotificacao(${idx})">
+        <div style="font-weight:800;color:#15803d;">✓ Orçamento Aprovado</div>
+        <div style="font-weight:700;margin-top:2px;">${n.nome} • ${fmtMoeda(n.total)}</div>
+        <div style="font-size:0.7rem;color:#525b56;margin-top:1px;">Serviço: ${fmtDataBR(n.data)} às ${n.hora || '09:00'}</div>
+      </div>
+    `).join('');
+  }
+
+  async function abrirNotificacao(idx) {
+    const lista = Array.isArray(dbData.notificacoes) ? dbData.notificacoes : [];
+    const item = lista[idx];
+    document.getElementById('notifDropdown').classList.remove('open');
+    if (!item) return;
+    dbData.notificacoes.splice(idx, 1);
+    renderNotificacoes();
+    await syncSave();
+    if (dbData.orcamentos && dbData.orcamentos[item.orcId]) {
+      carregarOrcamento(item.orcId);
+    } else {
+      alert('Este orçamento não foi encontrado no histórico.');
+    }
+  }
+
+  async function limparNotificacoes() {
+    dbData.notificacoes = [];
+    renderNotificacoes();
+    await syncSave();
+  }
+
+  function registrarNotificacaoAprovacao(orc) {
+    if (!Array.isArray(dbData.notificacoes)) dbData.notificacoes = [];
+    dbData.notificacoes = dbData.notificacoes.filter(n => n.orcId !== orc.id);
+    dbData.notificacoes.unshift({
+      orcId: orc.id,
+      nome: orc.nome,
+      data: orc.data,
+      hora: orc.hora || '09:00',
+      total: orc.total,
+      createdAt: Date.now()
+    });
+    renderNotificacoes();
+  }
 
   function getSegundaDaSemana(d) {
     const dt = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -1460,6 +1628,7 @@
       // Ajusta semana da agenda para a data agendada
       const [y, m, d] = data.split('-').map(Number);
       agendaInicioSemana = getSegundaDaSemana(new Date(y, m - 1, d));
+      registrarNotificacaoAprovacao(registro);
     }
 
     await syncSave();
@@ -1483,6 +1652,7 @@
       desc: `Serviço: ${o.nome} (${(o.itens || []).map(i => i.desc).join(', ')})`,
       valor: o.total
     };
+    registrarNotificacaoAprovacao(o);
     await syncSave();
     renderHistorico();
     renderAgenda();
@@ -1615,6 +1785,10 @@
   async function excluirOrcamento(id) {
     if (!confirm('Excluir este orçamento?')) return;
     delete dbData.orcamentos[id];
+    if (Array.isArray(dbData.notificacoes)) {
+      dbData.notificacoes = dbData.notificacoes.filter(n => n.orcId !== id);
+      renderNotificacoes();
+    }
     await syncSave();
     renderHistorico();
     renderAgenda();
@@ -1630,7 +1804,8 @@
           orcamentos: parsed.orcamentos || {},
           lancamentos: parsed.lancamentos || {},
           atalhos: Array.isArray(parsed.atalhos) ? parsed.atalhos : [...PRODUTOS_PADRAO],
-          bloqueiosAgenda: parsed.bloqueiosAgenda || {}
+          bloqueiosAgenda: parsed.bloqueiosAgenda || {},
+          notificacoes: Array.isArray(parsed.notificacoes) ? parsed.notificacoes : []
         };
       } catch (e) {}
     }
@@ -1638,6 +1813,7 @@
     renderProdutos();
     renderFinanceiro();
     renderAgenda();
+    renderNotificacoes();
 
     const url = FIREBASE_DB_URL.replace(/\/$/, '');
     const badge = document.getElementById('syncStatus');
@@ -1657,7 +1833,8 @@
           orcamentos: remote.orcamentos || {},
           lancamentos: remote.lancamentos || {},
           atalhos: Array.isArray(remote.atalhos) ? remote.atalhos : dbData.atalhos,
-          bloqueiosAgenda: remote.bloqueiosAgenda || {}
+          bloqueiosAgenda: remote.bloqueiosAgenda || {},
+          notificacoes: Array.isArray(remote.notificacoes) ? remote.notificacoes : []
         };
         localStorage.setItem('drlimpeza_data', JSON.stringify(dbData));
         renderProdutos();
