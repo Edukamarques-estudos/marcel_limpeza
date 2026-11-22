@@ -217,8 +217,7 @@
 <body>
 
 <div class="print-floating-bar">
-  <button style="background:#00a896;color:#fff;" onclick="baixarImagemOrcamento()">Salvar / Enviar Foto</button>
-  <button style="background:#16a34a;color:#fff;" onclick="abrirWhatsAppCliente()">WhatsApp</button>
+  <button style="background:#16a34a;color:#fff;" onclick="enviarOrcamentoWhatsApp()">Enviar no WhatsApp</button>
   <button style="background:#e2e8f0;color:#0f172a;" onclick="togglePrintMode(false)">Voltar</button>
 </div>
 
@@ -618,7 +617,7 @@
     ctx.closePath();
   }
 
-  async function baixarImagemOrcamento() {
+  async function enviarOrcamentoWhatsApp() {
     const nome = document.getElementById('cliNome').value.trim() || 'Cliente';
     const tel = document.getElementById('cliTel').value.trim();
     const end = document.getElementById('cliEnd').value.trim();
@@ -802,12 +801,24 @@
     canvas.toBlob(async (blob) => {
       const fileName = `Orcamento_DrLimpeza_${nome.replace(/\s+/g, '_')}.png`;
       const file = new File([blob], fileName, { type: 'image/png' });
+      const telRaw = document.getElementById('cliTel').value.replace(/\D/g, '');
+      const phoneParam = telRaw.length >= 10 ? (telRaw.startsWith('55') ? telRaw : '55' + telRaw) : '';
+      const waUrl = phoneParam ? `https://wa.me/${phoneParam}` : `https://wa.me/`;
 
+      // Copia a imagem para a área de transferência (permite colar direto no WhatsApp Web/Desktop ou teclado do celular)
+      try {
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        }
+      } catch (e) {}
+
+      // No celular: abre o compartilhamento nativo com a foto já anexada (escolhe WhatsApp e o contato)
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
           await navigator.share({
             files: [file],
-            title: 'Orçamento Dr. Limpeza'
+            title: 'Orçamento Dr. Limpeza',
+            text: `Olá ${nome}, segue o seu orçamento da Dr. Limpeza!`
           });
           return;
         } catch (err) {
@@ -815,18 +826,13 @@
         }
       }
 
+      // Fallback (PC ou navegador sem share de arquivo): baixa a imagem e abre a conversa no WhatsApp do telefone cadastrado
       const link = document.createElement('a');
       link.download = fileName;
       link.href = URL.createObjectURL(blob);
       link.click();
+      window.open(waUrl, '_blank');
     }, 'image/png');
-  }
-
-  function abrirWhatsAppCliente() {
-    const tel = document.getElementById('cliTel').value.replace(/\D/g, '');
-    const phoneParam = tel.length >= 10 ? (tel.startsWith('55') ? tel : '55' + tel) : '';
-    const url = phoneParam ? `https://wa.me/${phoneParam}` : `https://wa.me/`;
-    window.open(url, '_blank');
   }
 
   // ==================== ORÇAMENTO ====================
