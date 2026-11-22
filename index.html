@@ -177,7 +177,7 @@
   .leg-box { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
 
   .agenda-grid-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
-  .agenda-table { width: 100%; border-collapse: collapse; min-width: 480px; }
+  .agenda-table { width: 100%; border-collapse: collapse; min-width: 540px; }
   .agenda-table th {
     background: #121619;
     color: #fff;
@@ -314,7 +314,7 @@
   <div class="top-bar">
     <div class="brand-wrap">
       <div class="brand">DOUTOR LIMPEZA</div>
-      <div class="brand-sub">WhatsApp: (15) 99735-3390</div>
+      <div class="brand-sub"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;fill:#25D366;" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-5.825 4.74-10.563 10.564-10.563 5.826 0 10.564 4.738 10.564 10.564 0 5.826-4.74 10.562-10.567 10.562z"/></svg>(15) 99735-3390 - Marcel</div>
     </div>
     <span id="syncStatus" class="sync-badge sync-warn">Local</span>
   </div>
@@ -335,7 +335,7 @@
       <div class="quote-preview-banner">
         <div>
           <div style="font-size:1.15rem;font-weight:900;letter-spacing:0.4px;color:#8ce000;">DOUTOR LIMPEZA</div>
-          <div style="font-size:0.75rem;opacity:0.95;font-weight:700;margin-top:2px;">WhatsApp: (15) 99735-3390</div>
+          <div style="font-size:0.75rem;opacity:0.95;font-weight:700;margin-top:2px;"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;fill:#25D366;" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-5.825 4.74-10.563 10.564-10.563 5.826 0 10.564 4.738 10.564 10.564 0 5.826-4.74 10.562-10.567 10.562z"/></svg>(15) 99735-3390 - Marcel</div>
           <div style="font-size:0.7rem;color:#d9f99d;">Lavagem e Higienização de Estofados e Colchões</div>
         </div>
         <div style="text-align:right;font-size:0.78rem;">
@@ -382,6 +382,9 @@
               <option value="15:00">15:00</option>
               <option value="16:00">16:00</option>
               <option value="17:00">17:00</option>
+              <option value="18:00">18:00</option>
+              <option value="19:00">19:00</option>
+              <option value="20:00">20:00</option>
             </select>
           </div>
         </div>
@@ -435,7 +438,7 @@
         <div class="grid-2 no-print" style="margin-top:10px;">
           <div>
             <label>Desconto (R$)</label>
-            <input type="number" id="orcDesc" value="0" min="0" step="0.01" oninput="renderItens()">
+            <input type="number" id="orcDesc" value="" placeholder="0,00" min="0" step="0.01" oninput="renderItens()">
           </div>
           <div>
             <label>Observações / Condições</label>
@@ -651,7 +654,7 @@
     { desc: 'Bancos Carro', val: 180 }
   ];
 
-  const HORARIOS_AGENDA = ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+  const HORARIOS_AGENDA = ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
   const DIAS_SEMANA_CURTO = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
   // ==================== ESTADO & STORAGE ====================
@@ -694,7 +697,7 @@
   // ==================== AGENDA VISUAL & BLOQUEIOS ====================
   function getDiasSemanaAtual() {
     const dias = [];
-    for (let i = 0; i < 6; i++) { // Seg a Sáb
+    for (let i = 0; i < 7; i++) { // Seg a Dom
       const dt = new Date(agendaInicioSemana);
       dt.setDate(agendaInicioSemana.getDate() + i);
       dias.push(dt);
@@ -807,7 +810,7 @@
     const bloqueios = dbData.bloqueiosAgenda || {};
 
     const scale = 2;
-    const width = 620;
+    const width = 680;
     const pad = 20;
     const innerW = width - pad * 2;
     const rowH = 38;
@@ -835,9 +838,7 @@
     ctx.font = '900 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('DOUTOR LIMPEZA', pad + 16, pad + 32);
 
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('WhatsApp: (15) 99735-3390', pad + 16, pad + 52);
+    drawWhatsAppHeaderLine(ctx, pad + 16, pad + 52);
 
     ctx.fillStyle = '#d9f99d';
     ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -1047,6 +1048,32 @@
   }
 
   // ==================== GERAR IMAGEM BONITA DO ORÇAMENTO ====================
+  function drawWhatsAppHeaderLine(ctx, x, y) {
+    const r = 7;
+    const cx = x + r;
+    const cy = y - 4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#25D366';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx - 5, cy + 4);
+    ctx.lineTo(cx - 7, cy + 8);
+    ctx.lineTo(cx - 2, cy + 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(cx + 0.5, cy - 0.5, 3.6, 0.35 * Math.PI, 1.15 * Math.PI);
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('(15) 99735-3390 - Marcel', x + 19, y);
+  }
+
   function roundRect(ctx, x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -1094,9 +1121,7 @@
     ctx.fillStyle = '#8ce000';
     ctx.fillText('DOUTOR LIMPEZA', pad + 18, pad + 35);
 
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('WhatsApp: (15) 99735-3390', pad + 18, pad + 56);
+    drawWhatsAppHeaderLine(ctx, pad + 18, pad + 56);
 
     ctx.fillStyle = '#d9f99d';
     ctx.font = '500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -1321,7 +1346,7 @@
     document.getElementById('cliNome').value = '';
     document.getElementById('cliTel').value = '';
     document.getElementById('cliEnd').value = '';
-    document.getElementById('orcDesc').value = '0';
+    document.getElementById('orcDesc').value = '';
     document.getElementById('orcObs').value = '';
     document.getElementById('orcData').value = hojeISO();
     document.getElementById('orcHora').value = '09:00';
@@ -1504,7 +1529,7 @@
     document.getElementById('cliEnd').value = o.end || '';
     document.getElementById('orcData').value = o.data || hojeISO();
     document.getElementById('orcHora').value = o.hora || '09:00';
-    document.getElementById('orcDesc').value = o.desc || 0;
+    document.getElementById('orcDesc').value = o.desc ? o.desc : '';
     document.getElementById('orcObs').value = o.obs || '';
     itensOrcamento = JSON.parse(JSON.stringify(o.itens || []));
     renderItens();
