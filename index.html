@@ -6,20 +6,21 @@
 <title>Dr. Limpeza - Orçamentos & Financeiro</title>
 <style>
   :root {
-    --primary: #0f4c81;
-    --primary-dark: #093154;
-    --accent: #00a896;
-    --bg: #f1f5f9;
+    --primary: #121619;
+    --primary-dark: #080a0c;
+    --accent: #76c800;
+    --lime: #8ce000;
+    --bg: #f3f5f4;
     --card: #ffffff;
-    --text: #1e293b;
-    --muted: #64748b;
-    --border: #cbd5e1;
-    --green: #15803d;
-    --green-bg: #dcfce7;
+    --text: #121619;
+    --muted: #525b56;
+    --border: #cbd5d0;
+    --green: #3f7d00;
+    --green-bg: #ecfccb;
     --red: #b91c1c;
     --red-bg: #fee2e2;
-    --blue: #1d4ed8;
-    --blue-bg: #dbeafe;
+    --blue: #3f7d00;
+    --blue-bg: #ecfccb;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
@@ -36,8 +37,8 @@
   }
   .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .brand-wrap { display: flex; flex-direction: column; }
-  .brand { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.3px; }
-  .brand-sub { font-size: 0.78rem; color: #bae6fd; font-weight: 600; margin-top: 1px; }
+  .brand { font-size: 1.15rem; font-weight: 900; letter-spacing: 0.3px; color: #8ce000; }
+  .brand-sub { font-size: 0.78rem; color: #ffffff; font-weight: 600; margin-top: 1px; }
   .sync-badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; background: rgba(255,255,255,0.18); font-weight: 600; }
   .sync-ok { background: #16a34a; color: #fff; }
   .sync-warn { background: #d97706; color: #fff; }
@@ -54,7 +55,7 @@
     cursor: pointer;
     transition: 0.15s;
   }
-  .tab-btn.active { background: #fff; color: var(--primary); }
+  .tab-btn.active { background: #8ce000; color: #121619; }
 
   /* Containers */
   .container { max-width: 720px; margin: 0 auto; padding: 12px; }
@@ -101,10 +102,10 @@
     gap: 6px;
     transition: 0.15s;
   }
-  .btn-primary { background: var(--primary); color: #fff; width: 100%; }
+  .btn-primary { background: var(--primary); color: #8ce000; width: 100%; }
   .btn-primary:active { background: var(--primary-dark); }
-  .btn-accent { background: var(--accent); color: #fff; }
-  .btn-whatsapp { background: #16a34a; color: #fff; width: 100%; font-size: 0.95rem; padding: 12px; }
+  .btn-accent { background: #8ce000; color: #121619; font-weight: 800; }
+  .btn-whatsapp { background: #8ce000; color: #121619; font-weight: 900; width: 100%; font-size: 0.95rem; padding: 12px; }
   .btn-outline { background: #fff; border: 1px solid var(--border); color: var(--text); }
   .btn-sm { padding: 5px 9px; font-size: 0.78rem; }
   .btn-danger { background: var(--red-bg); color: var(--red); }
@@ -175,7 +176,7 @@
 
   .quote-preview-banner {
     display: none;
-    background: linear-gradient(135deg, #0f4c81 0%, #093154 100%);
+    background: linear-gradient(135deg, #121619 0%, #22292e 100%); border-bottom: 3px solid #8ce000;
     color: #fff;
     padding: 14px 16px;
     border-radius: 8px;
@@ -217,14 +218,14 @@
 <body>
 
 <div class="print-floating-bar">
-  <button style="background:#16a34a;color:#fff;" onclick="enviarOrcamentoWhatsApp()">Enviar no WhatsApp</button>
+  <button style="background:#8ce000;color:#121619;" onclick="enviarOrcamentoWhatsApp()">Enviar no WhatsApp</button>
   <button style="background:#e2e8f0;color:#0f172a;" onclick="togglePrintMode(false)">Voltar</button>
 </div>
 
 <header>
   <div class="top-bar">
     <div class="brand-wrap">
-      <div class="brand">DR. LIMPEZA</div>
+      <div class="brand">DOUTOR LIMPEZA</div>
       <div class="brand-sub">WhatsApp: (15) 99735-3390</div>
     </div>
     <span id="syncStatus" class="sync-badge sync-warn">Local</span>
@@ -244,9 +245,9 @@
     <div id="printCaptureArea">
       <div class="quote-preview-banner">
         <div>
-          <div style="font-size:1.15rem;font-weight:900;letter-spacing:0.4px;">DR. LIMPEZA</div>
+          <div style="font-size:1.15rem;font-weight:900;letter-spacing:0.4px;color:#8ce000;">DOUTOR LIMPEZA</div>
           <div style="font-size:0.75rem;opacity:0.95;font-weight:700;margin-top:2px;">WhatsApp: (15) 99735-3390</div>
-          <div style="font-size:0.7rem;opacity:0.85;">Higienização & Limpeza Profissional</div>
+          <div style="font-size:0.7rem;color:#d9f99d;">Lavagem e Higienização de Estofados e Colchões</div>
         </div>
         <div style="text-align:right;font-size:0.78rem;">
           <div style="font-weight:800;">ORÇAMENTO</div>
@@ -646,21 +647,21 @@
 
     // Cabeçalho Azul
     roundRect(ctx, pad, pad, innerW, 96, 12);
-    ctx.fillStyle = '#0f4c81';
+    ctx.fillStyle = '#121619';
     ctx.fill();
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('DR. LIMPEZA', pad + 18, pad + 35);
+    ctx.fillStyle = '#8ce000'; ctx.fillText('DOUTOR LIMPEZA', pad + 18, pad + 35);
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('WhatsApp: (15) 99735-3390', pad + 18, pad + 56);
 
-    ctx.fillStyle = '#bae6fd';
+    ctx.fillStyle = '#d9f99d';
     ctx.font = '500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText('Higienização & Limpeza Profissional', pad + 18, pad + 75);
+    ctx.fillText('Lavagem e Higienização de Estofados e Colchões', pad + 18, pad + 75);
 
     ctx.textAlign = 'right';
     ctx.fillStyle = '#ffffff';
@@ -685,7 +686,7 @@
     ctx.stroke();
 
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#0f4c81';
+    ctx.fillStyle = '#121619';
     ctx.font = '800 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('DADOS DO CLIENTE', pad + 14, y + 20);
 
@@ -783,14 +784,14 @@
 
     y += 16;
     roundRect(ctx, pad, y, innerW, 56, 10);
-    ctx.fillStyle = '#f0f9ff';
+    ctx.fillStyle = '#f7fee7';
     ctx.fill();
-    ctx.strokeStyle = '#0f4c81';
+    ctx.strokeStyle = '#8ce000';
     ctx.lineWidth = 2;
     ctx.stroke();
 
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#0f4c81';
+    ctx.fillStyle = '#121619';
     ctx.font = '800 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('VALOR TOTAL DO ORÇAMENTO', pad + 16, y + 33);
 
