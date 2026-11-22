@@ -407,7 +407,7 @@
           </button>
           <div class="notif-dropdown" id="notifDropdown" onclick="event.stopPropagation()">
             <div class="notif-header">
-              <span>Orçamentos Aprovados</span>
+              <span>Notificações & Lembretes</span>
               <button type="button" class="notif-clear-btn" onclick="limparNotificacoes()">Limpar</button>
             </div>
             <div class="notif-list" id="notifList"></div>
@@ -804,13 +804,20 @@
       return;
     }
 
-    listEl.innerHTML = lista.map((n, idx) => `
-      <div class="notif-item" onclick="abrirNotificacao(${idx})">
-        <div style="font-weight:800;color:#15803d;">✓ Orçamento Aprovado</div>
-        <div style="font-weight:700;margin-top:2px;">${n.nome} • ${fmtMoeda(n.total)}</div>
-        <div style="font-size:0.7rem;color:#525b56;margin-top:1px;">Serviço: ${fmtDataBR(n.data)} às ${n.hora || '09:00'}</div>
-      </div>
-    `).join('');
+    listEl.innerHTML = lista.map((n, idx) => {
+      const isLembrete = n.tipo === 'lembrete';
+      const titulo = isLembrete ? `⏰ ${n.titulo || 'Serviço Próximo'}` : '✓ Orçamento Aprovado';
+      const corTitulo = isLembrete ? '#b45309' : '#15803d';
+      const endInfo = isLembrete && n.end ? `<div style="font-size:0.68rem;color:#475569;margin-top:1px;">📍 ${n.end}</div>` : '';
+      return `
+        <div class="notif-item" style="${isLembrete ? 'background:#fffbeb;' : ''}" onclick="abrirNotificacao(${idx})">
+          <div style="font-weight:800;color:${corTitulo};">${titulo}</div>
+          <div style="font-weight:700;margin-top:2px;">${n.nome} • ${fmtMoeda(n.total)}</div>
+          <div style="font-size:0.7rem;color:#525b56;margin-top:1px;">Serviço: ${fmtDataBR(n.data)} às ${n.hora || '09:00'}</div>
+          ${endInfo}
+        </div>
+      `;
+    }).join('');
   }
 
   async function abrirNotificacao(idx) {
@@ -836,16 +843,99 @@
 
   function registrarNotificacaoAprovacao(orc) {
     if (!Array.isArray(dbData.notificacoes)) dbData.notificacoes = [];
-    dbData.notificacoes = dbData.notificacoes.filter(n => n.orcId !== orc.id);
+    dbData.notificacoes = dbData.notificacoes.filter(n => !(n.orcId === orc.id && n.tipo !== 'lembrete'));
     dbData.notificacoes.unshift({
+      tipo: 'aprovacao',
       orcId: orc.id,
       nome: orc.nome,
       data: orc.data,
       hora: orc.hora || '09:00',
+      end: orc.end || '',
       total: orc.total,
       createdAt: Date.now()
     });
     renderNotificacoes();
+    verificarLembretesAgendados(false);
+  }
+
+  function getLembretesVistos() {
+    try {
+      return JSON.parse(localStorage.getItem('drlimpeza_lembretes_vistos') || '{}');
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function salvarLembreteVisto(chave) {
+    const vistos = getLembretesVistos();
+    vistos[chave] = Date.now();
+    localStorage.setItem('drlimpeza_lembretes_vistos', JSON.stringify(vistos));
+  }
+
+  async function verificarLembretesAgendados(salvarNoBanco = true) {
+    if (!dbData.orcamentos) return;
+    if (!Array.isArray(dbData.notificacoes)) dbData.notificacoes = [];
+
+    const agora = new Date();
+    const vistos = getLembretesVistos();
+    let adicionou = false;
+
+    // Estágios de antecedência: 24h (amanhã/próximas 24h), 2h antes e 30min antes
+    const estagios = [
+      { id: '24h', maxMin: 24 * 60, minMin: 120, label: 'Serviço em menos de 24h' },
+      { id: '2h',  maxMin: 120,     minMin: 30,  label: 'Serviço em menos de 2h' },
+      { id: '30m', maxMin: 30,      minMin: -15, label: 'Serviço começando agora!' }
+    ];
+
+    Object.values(dbData.orcamentos).forEach(o => {
+      if (o.status !== 'concluido' || !o.data) return;
+      const [y, m, d] = o.data.split('-').map(Number);
+      const [hh, mm] = (o.hora || '09:00').split(':').map(Number);
+      const dataServico = new Date(y, m - 1, d, hh || 9, mm || 0, 0);
+      const diffMin = (dataServico.getTime() - agora.getTime()) / 60000;
+
+      // Ignora serviços que já passaram há mais de 15 minutos
+      if (diffMin < -15 || diffMin > 24 * 60) return;
+
+      const estagio = estagios.find(e => diffMin <= e.maxMin && diffMin > e.minMin);
+      if (!estagio) return;
+
+      const chaveUnica = `${o.id}_${o.data}_${o.hora || '09:00'}_${estagio.id}`;
+      if (vistos[chaveUnica]) return;
+
+      salvarLembreteVisto(chaveUnica);
+      // Remove lembretes anteriores do mesmo serviço para não duplicar no sino
+      dbData.notificacoes = dbData.notificacoes.filter(n => !(n.orcId === o.id && n.tipo === 'lembrete'));
+
+      let tempoTexto = estagio.label;
+      if (diffMin >= 60) {
+        const horasRest = Math.round(diffMin / 60);
+        tempoTexto = horasRest === 1 ? 'Falta 1 hora para o serviço' : `Faltam ${horasRest}h para o serviço`;
+      } else if (diffMin > 1) {
+        tempoTexto = `Faltam ${Math.ceil(diffMin)} min para o serviço`;
+      } else {
+        tempoTexto = 'Serviço agendado para agora!';
+      }
+
+      dbData.notificacoes.unshift({
+        tipo: 'lembrete',
+        chaveLembrete: chaveUnica,
+        titulo: tempoTexto,
+        orcId: o.id,
+        nome: o.nome,
+        data: o.data,
+        hora: o.hora || '09:00',
+        end: o.end || '',
+        total: o.total,
+        createdAt: Date.now()
+      });
+      adicionou = true;
+    });
+
+    if (adicionou) {
+      renderNotificacoes();
+      if (salvarNoBanco) await syncSave();
+    }
   }
 
   function getSegundaDaSemana(d) {
@@ -1814,6 +1904,7 @@
     renderFinanceiro();
     renderAgenda();
     renderNotificacoes();
+    verificarLembretesAgendados(false);
 
     const url = FIREBASE_DB_URL.replace(/\/$/, '');
     const badge = document.getElementById('syncStatus');
@@ -1840,6 +1931,8 @@
         renderProdutos();
         renderFinanceiro();
         renderAgenda();
+        renderNotificacoes();
+        verificarLembretesAgendados(true);
       }
       badge.textContent = 'Firebase OK';
       badge.className = 'sync-badge sync-ok';
@@ -1876,6 +1969,7 @@
     if (!document.hidden) syncLoad();
   });
   setInterval(() => {
+    verificarLembretesAgendados(true);
     const active = document.activeElement;
     const isTyping = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT');
     if (!document.hidden && !isTyping) syncLoad();
