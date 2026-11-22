@@ -107,7 +107,7 @@
   .btn-sm { padding: 5px 9px; font-size: 0.78rem; }
   .btn-danger { background: var(--red-bg); color: var(--red); }
 
-  /* Quick Service Chips (Editáveis e Removíveis) */
+  /* Quick Service Chips */
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .chip-wrap {
     display: inline-flex;
@@ -179,37 +179,52 @@
   .kpi-title { font-size: 0.7rem; font-weight: 800; color: var(--muted); text-transform: uppercase; }
   .kpi-val { font-size: 1.05rem; font-weight: 900; margin-top: 4px; }
 
-  /* Screenshot Mode */
+  /* Screenshot Mode (Tela do Print / Envio WhatsApp) */
   body.print-mode header, body.print-mode .no-print { display: none !important; }
   body.print-mode { background: #fff; padding: 0; }
-  body.print-mode .container { max-width: 480px; padding: 8px; }
+  body.print-mode .container { max-width: 480px; padding: 10px; }
+  body.print-mode input {
+    border: none;
+    padding: 2px 0;
+    font-weight: 700;
+    background: transparent;
+    color: var(--text);
+  }
   .quote-preview-banner {
     display: none;
     background: var(--primary);
     color: #fff;
     padding: 14px;
-    border-radius: 8px 8px 0 0;
+    border-radius: 8px;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   body.print-mode .quote-preview-banner { display: flex; }
-  .exit-print-btn {
+
+  .print-floating-bar {
     display: none;
     position: fixed;
-    bottom: 16px;
-    right: 16px;
-    background: #0f172a;
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 24px;
-    font-weight: 800;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 8px;
     z-index: 999;
+    background: rgba(15, 23, 42, 0.92);
+    padding: 8px 12px;
+    border-radius: 30px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    white-space: nowrap;
+  }
+  body.print-mode .print-floating-bar { display: flex; }
+  .print-floating-bar button {
+    border: none;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-weight: 800;
+    font-size: 0.82rem;
     cursor: pointer;
   }
-  body.print-mode .exit-print-btn { display: block; }
 
   .badge-status { padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 800; }
   .st-orc { background: #fef3c7; color: #b45309; }
@@ -232,7 +247,10 @@
 </head>
 <body>
 
-<button class="exit-print-btn" onclick="togglePrintMode(false)">✕ Sair do Modo Print</button>
+<div class="print-floating-bar">
+  <button style="background:#16a34a;color:#fff;" onclick="abrirWhatsAppCliente()">📲 Abrir WhatsApp do Cliente</button>
+  <button style="background:#e2e8f0;color:#0f172a;" onclick="togglePrintMode(false)">✕ Voltar</button>
+</div>
 
 <header>
   <div class="top-bar">
@@ -252,7 +270,7 @@
   <div id="view-orcamento" class="view active">
     <div class="quote-preview-banner">
       <div>
-        <div style="font-size:1.1rem;font-weight:900;">🧼 DR. LIMPEZA</div>
+        <div style="font-size:1.15rem;font-weight:900;">🧼 DR. LIMPEZA</div>
         <div style="font-size:0.75rem;opacity:0.9;">Higienização & Limpeza Profissional</div>
       </div>
       <div style="text-align:right;font-size:0.78rem;">
@@ -341,7 +359,7 @@
         </div>
       </div>
 
-      <div id="obsPrintBox" style="display:none;margin-top:8px;font-size:0.8rem;color:var(--muted);"></div>
+      <div id="obsPrintBox" style="display:none;margin-top:10px;padding:8px;background:#f8fafc;border-radius:6px;font-size:0.8rem;color:var(--text);"></div>
 
       <div class="total-box">
         <div>
@@ -352,12 +370,11 @@
       </div>
 
       <div class="no-print" style="display:grid;gap:8px;">
-        <button class="btn btn-whatsapp" onclick="enviarWhatsApp()">📲 Enviar Orçamento no WhatsApp</button>
+        <button class="btn btn-whatsapp" onclick="togglePrintMode(true)">📸 Gerar Tela do Print (Para Enviar no WhatsApp)</button>
         <div class="grid-2">
-          <button class="btn btn-outline" onclick="togglePrintMode(true)">📸 Tela Limpa (Print)</button>
           <button class="btn btn-primary" onclick="salvarOrcamento('orcamento')">💾 Salvar Orçamento</button>
+          <button class="btn" style="background:#15803d;color:#fff;" onclick="salvarOrcamento('concluido')">✅ Serviço Realizado</button>
         </div>
-        <button class="btn" style="background:#15803d;color:#fff;" onclick="salvarOrcamento('concluido')">✅ Salvar e Lançar como Serviço Realizado</button>
       </div>
     </div>
   </div>
@@ -563,6 +580,9 @@
   }
 
   function togglePrintMode(enable) {
+    if (enable && itensOrcamento.length === 0) {
+      return alert('Adicione pelo menos um item ao orçamento antes de gerar o print.');
+    }
     document.body.classList.toggle('print-mode', enable);
     document.getElementById('printDate').textContent = fmtDataBR(document.getElementById('orcData').value);
     const obs = document.getElementById('orcObs').value.trim();
@@ -573,6 +593,14 @@
     } else {
       obsBox.style.display = 'none';
     }
+    if (enable) window.scrollTo(0, 0);
+  }
+
+  function abrirWhatsAppCliente() {
+    const tel = document.getElementById('cliTel').value.replace(/\D/g, '');
+    const phoneParam = tel.length >= 10 ? (tel.startsWith('55') ? tel : '55' + tel) : '';
+    const url = phoneParam ? `https://wa.me/${phoneParam}` : `https://wa.me/`;
+    window.open(url, '_blank');
   }
 
   // ==================== ORÇAMENTO ====================
@@ -640,45 +668,6 @@
     document.getElementById('orcObs').value = '';
     document.getElementById('orcData').value = hojeISO();
     renderItens();
-  }
-
-  function enviarWhatsApp() {
-    if (itensOrcamento.length === 0) return alert('Adicione pelo menos um item ao orçamento.');
-    const nome = document.getElementById('cliNome').value.trim() || 'Cliente';
-    const tel = document.getElementById('cliTel').value.replace(/\D/g, '');
-    const data = fmtDataBR(document.getElementById('orcData').value);
-    const obs = document.getElementById('orcObs').value.trim();
-    const { sub, desc, total } = calcTotalOrcamento();
-
-    let msg = `*🧼 DR. LIMPEZA - ORÇAMENTO*
-`;
-    msg += `👤 *Cliente:* ${nome}
-`;
-    msg += `📅 *Data:* ${data} _(Orçamento válido por 10 dias)_
-
-`;
-    msg += `*Serviços:*
-`;
-    itensOrcamento.forEach(i => {
-      msg += `• ${i.qtd}x ${i.desc} — ${fmtMoeda(i.qtd * i.val)}
-`;
-    });
-    if (desc > 0) {
-      msg += `
-Subtotal: ${fmtMoeda(sub)}
-`;
-      msg += `Desconto: -${fmtMoeda(desc)}
-`;
-    }
-    msg += `
-💰 *TOTAL: ${fmtMoeda(total)}*`;
-    if (obs) msg += `
-
-📝 _Obs: ${obs}_`;
-
-    const phoneParam = tel.length >= 10 ? (tel.startsWith('55') ? tel : '55' + tel) : '';
-    const url = `https://wa.me/${phoneParam}?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank');
   }
 
   async function salvarOrcamento(status) {
