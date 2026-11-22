@@ -179,10 +179,10 @@
   .kpi-title { font-size: 0.7rem; font-weight: 800; color: var(--muted); text-transform: uppercase; }
   .kpi-val { font-size: 1.05rem; font-weight: 900; margin-top: 4px; }
 
-  /* Screenshot Mode (Tela do Print / Envio WhatsApp) */
+  /* Screenshot Mode (Tela do Print / Gerador de Imagem) */
   body.print-mode header, body.print-mode .no-print { display: none !important; }
-  body.print-mode { background: #fff; padding: 0; }
-  body.print-mode .container { max-width: 480px; padding: 10px; }
+  body.print-mode { background: #e2e8f0; padding: 0; }
+  body.print-mode .container { max-width: 440px; padding: 12px 12px 84px 12px; }
   body.print-mode input {
     border: none;
     padding: 2px 0;
@@ -190,11 +190,24 @@
     background: transparent;
     color: var(--text);
   }
+  body.print-mode #printCaptureArea {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+  body.print-mode .card {
+    box-shadow: none;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 10px;
+  }
+  body.print-mode .total-box { margin-bottom: 0; }
+
   .quote-preview-banner {
     display: none;
-    background: var(--primary);
+    background: linear-gradient(135deg, #0f4c81 0%, #093154 100%);
     color: #fff;
-    padding: 14px;
+    padding: 14px 16px;
     border-radius: 8px;
     justify-content: space-between;
     align-items: center;
@@ -210,17 +223,17 @@
     transform: translateX(-50%);
     gap: 8px;
     z-index: 999;
-    background: rgba(15, 23, 42, 0.92);
+    background: rgba(15, 23, 42, 0.95);
     padding: 8px 12px;
     border-radius: 30px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
     white-space: nowrap;
   }
   body.print-mode .print-floating-bar { display: flex; }
   .print-floating-bar button {
     border: none;
     border-radius: 20px;
-    padding: 8px 14px;
+    padding: 9px 14px;
     font-weight: 800;
     font-size: 0.82rem;
     cursor: pointer;
@@ -248,19 +261,20 @@
 <body>
 
 <div class="print-floating-bar">
-  <button style="background:#16a34a;color:#fff;" onclick="abrirWhatsAppCliente()">📲 Abrir WhatsApp do Cliente</button>
+  <button style="background:#00a896;color:#fff;" onclick="baixarImagemOrcamento()">🖼️ Salvar / Enviar Foto</button>
+  <button style="background:#16a34a;color:#fff;" onclick="abrirWhatsAppCliente()">📲 WhatsApp</button>
   <button style="background:#e2e8f0;color:#0f172a;" onclick="togglePrintMode(false)">✕ Voltar</button>
 </div>
 
 <header>
   <div class="top-bar">
-    <div class="brand">🧼 DR. LIMPEZA <span style="font-weight:400;font-size:0.8rem;opacity:0.85;">| Gestão</span></div>
+    <div class="brand">DR. LIMPEZA <span style="font-weight:400;font-size:0.8rem;opacity:0.85;">| Gestão</span></div>
     <span id="syncStatus" class="sync-badge sync-warn">Local</span>
   </div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('orcamento', this)">📋 Orçamento</button>
-    <button class="tab-btn" onclick="switchTab('financeiro', this)">💰 Caixa & Lucro</button>
-    <button class="tab-btn" onclick="switchTab('historico', this)">🗂️ Histórico</button>
+    <button class="tab-btn active" onclick="switchTab('orcamento', this)">Orçamento</button>
+    <button class="tab-btn" onclick="switchTab('financeiro', this)">Caixa & Lucro</button>
+    <button class="tab-btn" onclick="switchTab('historico', this)">Histórico</button>
   </div>
 </header>
 
@@ -268,112 +282,114 @@
 
   <!-- ==================== ABA 1: ORÇAMENTO ==================== -->
   <div id="view-orcamento" class="view active">
-    <div class="quote-preview-banner">
-      <div>
-        <div style="font-size:1.15rem;font-weight:900;">🧼 DR. LIMPEZA</div>
-        <div style="font-size:0.75rem;opacity:0.9;">Higienização & Limpeza Profissional</div>
-      </div>
-      <div style="text-align:right;font-size:0.78rem;">
-        <div style="font-weight:800;">ORÇAMENTO</div>
-        <div id="printDate">--/--/----</div>
-        <div style="font-size:0.66rem;opacity:0.88;margin-top:2px;">Orçamento válido por 10 dias</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">
-        <span>Dados do Cliente</span>
-        <button class="btn btn-sm btn-outline no-print" onclick="novoOrcamento()">+ Limpar</button>
-      </div>
-      <div class="grid-2">
-        <div class="form-group">
-          <label>Nome do Cliente</label>
-          <input type="text" id="cliNome" placeholder="Ex: Maria Silva">
-        </div>
-        <div class="form-group">
-          <label>WhatsApp / Telefone</label>
-          <input type="tel" id="cliTel" placeholder="(11) 99999-9999">
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="form-group" style="margin-bottom:0;">
-          <label>Endereço</label>
-          <input type="text" id="cliEnd" placeholder="Ex: Rua das Flores, 123 - Vila Prudente">
-        </div>
-        <div class="form-group" style="margin-bottom:0;">
-          <label>Data do Serviço</label>
-          <input type="date" id="orcData">
-        </div>
-      </div>
-    </div>
-
-    <div class="card no-print">
-      <div class="card-title">
-        <span>Adicionar Itens ao Orçamento</span>
-        <button class="btn btn-sm btn-outline" onclick="openAtalhoModal()">+ Novo Atalho</button>
-      </div>
-      <div class="chips" id="quickChipsContainer"></div>
-      <div class="grid-3">
+    <div id="printCaptureArea">
+      <div class="quote-preview-banner">
         <div>
-          <label>Serviço / Item</label>
-          <input type="text" id="itemDesc" placeholder="Descrição do serviço">
+          <div style="font-size:1.15rem;font-weight:900;letter-spacing:0.4px;">DR. LIMPEZA</div>
+          <div style="font-size:0.75rem;opacity:0.9;">Higienização & Limpeza Profissional</div>
         </div>
-        <div>
-          <label>Qtd</label>
-          <input type="number" id="itemQtd" value="1" min="1">
-        </div>
-        <div>
-          <label>Valor Unit. (R$)</label>
-          <input type="number" id="itemVal" placeholder="0,00" step="0.01">
-        </div>
-      </div>
-      <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="addItem()">+ Incluir Item na Lista</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Itens do Orçamento</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Descrição</th>
-              <th style="text-align:center;width:45px;">Qtd</th>
-              <th class="num" style="width:85px;">Subtotal</th>
-              <th class="no-print" style="width:36px;"></th>
-            </tr>
-          </thead>
-          <tbody id="orcItensBody">
-            <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:14px;">Nenhum item adicionado ainda.</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="grid-2 no-print" style="margin-top:10px;">
-        <div>
-          <label>Desconto (R$)</label>
-          <input type="number" id="orcDesc" value="0" min="0" step="0.01" oninput="renderItens()">
-        </div>
-        <div>
-          <label>Observações / Condições</label>
-          <input type="text" id="orcObs" placeholder="Ex: Secagem em 4h, Pix ou Cartão">
+        <div style="text-align:right;font-size:0.78rem;">
+          <div style="font-weight:800;">ORÇAMENTO</div>
+          <div id="printDate">--/--/----</div>
+          <div style="font-size:0.66rem;opacity:0.88;margin-top:2px;">Orçamento válido por 10 dias</div>
         </div>
       </div>
 
-      <div id="obsPrintBox" style="display:none;margin-top:10px;padding:8px;background:#f8fafc;border-radius:6px;font-size:0.8rem;color:var(--text);"></div>
-
-      <div class="total-box">
-        <div>
-          <div class="total-label">VALOR TOTAL DO ORÇAMENTO</div>
-          <div id="descontoInfo" style="font-size:0.75rem;color:var(--green);font-weight:700;"></div>
+      <div class="card">
+        <div class="card-title">
+          <span>Dados do Cliente</span>
+          <button class="btn btn-sm btn-outline no-print" onclick="novoOrcamento()">+ Limpar</button>
         </div>
-        <div class="total-value" id="orcTotalDisplay">R$ 0,00</div>
-      </div>
-
-      <div class="no-print" style="display:grid;gap:8px;">
-        <button class="btn btn-whatsapp" onclick="togglePrintMode(true)">📸 Gerar Tela do Print (Para Enviar no WhatsApp)</button>
         <div class="grid-2">
-          <button class="btn btn-primary" onclick="salvarOrcamento('orcamento')">💾 Salvar Orçamento</button>
-          <button class="btn" style="background:#15803d;color:#fff;" onclick="salvarOrcamento('concluido')">✅ Serviço Realizado</button>
+          <div class="form-group">
+            <label>Nome do Cliente</label>
+            <input type="text" id="cliNome" placeholder="Ex: Maria Silva">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp / Telefone</label>
+            <input type="tel" id="cliTel" placeholder="(11) 99999-9999">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Endereço</label>
+            <input type="text" id="cliEnd" placeholder="Ex: Rua das Flores, 123 - Vila Prudente">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Data do Serviço</label>
+            <input type="date" id="orcData">
+          </div>
+        </div>
+      </div>
+
+      <div class="card no-print">
+        <div class="card-title">
+          <span>Adicionar Itens ao Orçamento</span>
+          <button class="btn btn-sm btn-outline" onclick="openAtalhoModal()">+ Novo Atalho</button>
+        </div>
+        <div class="chips" id="quickChipsContainer"></div>
+        <div class="grid-3">
+          <div>
+            <label>Serviço / Item</label>
+            <input type="text" id="itemDesc" placeholder="Descrição do serviço">
+          </div>
+          <div>
+            <label>Qtd</label>
+            <input type="number" id="itemQtd" value="1" min="1">
+          </div>
+          <div>
+            <label>Valor Unit. (R$)</label>
+            <input type="number" id="itemVal" placeholder="0,00" step="0.01">
+          </div>
+        </div>
+        <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="addItem()">+ Incluir Item na Lista</button>
+      </div>
+
+      <div class="card" style="margin-bottom:0;">
+        <div class="card-title">Itens do Orçamento</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th style="text-align:center;width:45px;">Qtd</th>
+                <th class="num" style="width:85px;">Subtotal</th>
+                <th class="no-print" style="width:36px;"></th>
+              </tr>
+            </thead>
+            <tbody id="orcItensBody">
+              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:14px;">Nenhum item adicionado ainda.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid-2 no-print" style="margin-top:10px;">
+          <div>
+            <label>Desconto (R$)</label>
+            <input type="number" id="orcDesc" value="0" min="0" step="0.01" oninput="renderItens()">
+          </div>
+          <div>
+            <label>Observações / Condições</label>
+            <input type="text" id="orcObs" placeholder="Ex: Secagem em 4h, Pix ou Cartão">
+          </div>
+        </div>
+
+        <div id="obsPrintBox" style="display:none;margin-top:10px;padding:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;font-size:0.8rem;color:var(--text);"></div>
+
+        <div class="total-box">
+          <div>
+            <div class="total-label">VALOR TOTAL DO ORÇAMENTO</div>
+            <div id="descontoInfo" style="font-size:0.75rem;color:var(--green);font-weight:700;"></div>
+          </div>
+          <div class="total-value" id="orcTotalDisplay">R$ 0,00</div>
+        </div>
+
+        <div class="no-print" style="display:grid;gap:8px;margin-top:12px;">
+          <button class="btn btn-whatsapp" onclick="togglePrintMode(true)">Gerar Tela do Print (Para Enviar no WhatsApp)</button>
+          <div class="grid-2">
+            <button class="btn btn-primary" onclick="salvarOrcamento('orcamento')">Salvar Orçamento</button>
+            <button class="btn" style="background:#15803d;color:#fff;" onclick="salvarOrcamento('concluido')">Serviço Realizado</button>
+          </div>
         </div>
       </div>
     </div>
@@ -402,8 +418,8 @@
         <div class="form-group">
           <label>Tipo</label>
           <select id="finTipo">
-            <option value="receita">🔵 Serviço / Receita (+)</option>
-            <option value="despesa">🔴 Despesa / Gasto (-)</option>
+            <option value="receita">Serviço / Receita (+)</option>
+            <option value="despesa">Despesa / Gasto (-)</option>
           </select>
         </div>
         <div class="form-group">
@@ -594,6 +610,226 @@
       obsBox.style.display = 'none';
     }
     if (enable) window.scrollTo(0, 0);
+  }
+
+  // ==================== GERAR IMAGEM BONITA DO ORÇAMENTO (CANVAS NATIVO) ====================
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  async function baixarImagemOrcamento() {
+    const nome = document.getElementById('cliNome').value.trim() || 'Cliente';
+    const tel = document.getElementById('cliTel').value.trim();
+    const end = document.getElementById('cliEnd').value.trim();
+    const data = fmtDataBR(document.getElementById('orcData').value);
+    const obs = document.getElementById('orcObs').value.trim();
+    const { sub, desc, total } = calcTotalOrcamento();
+
+    const scale = 2; // Alta resolução
+    const width = 540;
+    const pad = 24;
+    const innerW = width - pad * 2;
+
+    // Calcula altura dinâmica
+    let height = 250 + (itensOrcamento.length * 46) + 120;
+    if (end) height += 26;
+    if (desc > 0) height += 48;
+    if (obs) height += 44;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width * scale;
+    canvas.height = height * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+
+    // Fundo geral branco
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+
+    // Cabeçalho Azul
+    roundRect(ctx, pad, pad, innerW, 86, 12);
+    ctx.fillStyle = '#0f4c81';
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('DR. LIMPEZA', pad + 18, pad + 38);
+
+    ctx.fillStyle = '#bae6fd';
+    ctx.font = '500 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('Higienização & Limpeza Profissional', pad + 18, pad + 60);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('ORÇAMENTO', width - pad - 18, pad + 32);
+
+    ctx.font = '600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(data, width - pad - 18, pad + 51);
+
+    ctx.fillStyle = '#e0f2fe';
+    ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('Orçamento válido por 10 dias', width - pad - 18, pad + 68);
+
+    // Bloco Dados do Cliente
+    let y = pad + 102;
+    const clientBoxH = end ? 88 : 64;
+    roundRect(ctx, pad, y, innerW, clientBoxH, 10);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fill();
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#0f4c81';
+    ctx.font = '800 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('DADOS DO CLIENTE', pad + 14, y + 20);
+
+    ctx.fillStyle = '#1e293b';
+    ctx.font = '700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(`Cliente: ${nome}`, pad + 14, y + 42);
+
+    if (tel) {
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#475569';
+      ctx.font = '600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(tel, width - pad - 14, y + 42);
+      ctx.textAlign = 'left';
+    }
+
+    if (end) {
+      ctx.fillStyle = '#475569';
+      ctx.font = '500 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(`Endereço: ${end}`, pad + 14, y + 66);
+    }
+
+    // Cabeçalho da Tabela de Itens
+    y += clientBoxH + 16;
+    roundRect(ctx, pad, y, innerW, 34, 6);
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fill();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = '800 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('SERVIÇO / ITEM', pad + 12, y + 21);
+    ctx.textAlign = 'center';
+    ctx.fillText('QTD', width - pad - 125, y + 21);
+    ctx.textAlign = 'right';
+    ctx.fillText('SUBTOTAL', width - pad - 12, y + 21);
+
+    // Linhas dos Itens
+    y += 38;
+    itensOrcamento.forEach((item, index) => {
+      if (index % 2 === 1) {
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(pad, y, innerW, 44);
+      }
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#1e293b';
+      ctx.font = '700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(item.desc, pad + 12, y + 19);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(`${fmtMoeda(item.val)} un.`, pad + 12, y + 35);
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#1e293b';
+      ctx.font = '700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(String(item.qtd), width - pad - 125, y + 26);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '800 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(fmtMoeda(item.qtd * item.val), width - pad - 12, y + 26);
+
+      // Linha divisória
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.beginPath();
+      ctx.moveTo(pad, y + 44);
+      ctx.lineTo(width - pad, y + 44);
+      ctx.stroke();
+
+      y += 44;
+    });
+
+    // Desconto (se houver)
+    if (desc > 0) {
+      y += 14;
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#64748b';
+      ctx.font = '600 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(`Subtotal: ${fmtMoeda(sub)}`, width - pad - 12, y + 12);
+      ctx.fillStyle = '#15803d';
+      ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(`Desconto: -${fmtMoeda(desc)}`, width - pad - 12, y + 30);
+      y += 34;
+    }
+
+    // Observações (se houver)
+    if (obs) {
+      y += 14;
+      roundRect(ctx, pad, y, innerW, 34, 6);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fill();
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#475569';
+      ctx.font = '600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(`Obs: ${obs}`, pad + 12, y + 21);
+      y += 38;
+    }
+
+    // Caixa Total
+    y += 16;
+    roundRect(ctx, pad, y, innerW, 56, 10);
+    ctx.fillStyle = '#f0f9ff';
+    ctx.fill();
+    ctx.strokeStyle = '#0f4c81';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#0f4c81';
+    ctx.font = '800 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText('VALOR TOTAL DO ORÇAMENTO', pad + 16, y + 33);
+
+    ctx.textAlign = 'right';
+    ctx.font = '900 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillText(fmtMoeda(total), width - pad - 16, y + 36);
+
+    // Compartilha direto no celular (Web Share API) ou baixa a imagem PNG
+    canvas.toBlob(async (blob) => {
+      const fileName = `Orcamento_DrLimpeza_${nome.replace(/\s+/g, '_')}.png`;
+      const file = new File([blob], fileName, { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Orçamento Dr. Limpeza'
+          });
+          return;
+        } catch (err) {
+          // Se o usuário cancelar o compartilhamento, não faz nada
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      // Fallback: download direto da imagem PNG
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+    }, 'image/png');
   }
 
   function abrirWhatsAppCliente() {
@@ -803,7 +1039,7 @@
         </td>
         <td class="num">${fmtMoeda(o.total)}</td>
         <td style="text-align:right;white-space:nowrap;">
-          <button class="btn btn-sm btn-outline" onclick="carregarOrcamento('${o.id}')" title="Abrir">✏️</button>
+          <button class="btn btn-sm btn-outline" onclick="carregarOrcamento('${o.id}')" title="Abrir">Editar</button>
           <button class="btn btn-sm btn-danger" onclick="excluirOrcamento('${o.id}')" title="Excluir">✕</button>
         </td>
       </tr>
@@ -907,3 +1143,6 @@
 </script>
 </body>
 </html>
+Carácter removido: O emoji de sabão (🧼) que aparecia antes de DR. LIMPEZA (e os emojis das abas/botões que podiam renderizar estranho dependendo do navegador) foi removido, deixando o título limpo.
+
+Botão que gera a imagem pronta do orçamento: Na tela do print, adicionei o botão 🖼️ Salvar / Enviar Foto. Ao tocar nele no celular, ele desenha o orçamento em alta resolução (já recortado, sem botões da tela) e abre direto a janela de Compartilhar do celular para mandar a imagem no WhatsApp do cliente (ou baixa o .png se estiver no PC).
