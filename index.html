@@ -639,7 +639,7 @@
 <script>
   // ==================== CONFIGURAÇÃO FIXA DO FIREBASE ====================
   // Cole aqui a URL do seu Firebase Realtime Database (ex: "https://seu-projeto-default-rtdb.firebaseio.com")
-  const FIREBASE_DB_URL = "";
+  const FIREBASE_DB_URL = "https://controle-contas-6fa7e-default-rtdb.firebaseio.com";
   const FIREBASE_NODE = "dr_limpeza";
 
   // ==================== PRODUTOS / SERVIÇOS INICIAIS ====================
@@ -1617,6 +1617,14 @@
       badge.className = 'sync-badge sync-warn';
     }
   }
+
+  // Sincroniza automaticamente ao voltar para o app no celular/PC ou a cada 20s
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) syncLoad();
+  });
+  setInterval(() => {
+    if (!document.hidden) syncLoad();
+  }, 20000);
 
   // Inicialização
   syncLoad();
