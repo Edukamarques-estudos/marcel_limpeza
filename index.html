@@ -518,14 +518,18 @@
   <div id="view-produtos" class="view">
     <div class="card">
       <div class="card-title">Cadastrar Novo Produto / Serviço</div>
-      <div class="grid-3" style="grid-template-columns: 2fr 1fr;">
+      <div class="form-group">
+        <label>Nome do Produto ou Serviço</label>
+        <input type="text" id="cadProdNome" placeholder="Ex: Sofá 3 Lugares">
+      </div>
+      <div class="grid-2">
         <div class="form-group">
-          <label>Nome do Produto ou Serviço</label>
-          <input type="text" id="cadProdNome" placeholder="Ex: Sofá 3 Lugares">
+          <label>Valor Cobrado (R$)</label>
+          <input type="number" id="cadProdVal" placeholder="0,00" step="0.01">
         </div>
         <div class="form-group">
-          <label>Valor Padrão (R$)</label>
-          <input type="number" id="cadProdVal" placeholder="0,00" step="0.01">
+          <label>Custo Estimado (R$)</label>
+          <input type="number" id="cadProdCusto" placeholder="0,00" step="0.01">
         </div>
       </div>
       <button class="btn btn-primary" onclick="cadastrarProduto()">+ Salvar na Lista</button>
@@ -538,8 +542,10 @@
           <thead>
             <tr>
               <th>Descrição</th>
-              <th class="num" style="width:100px;">Valor</th>
-              <th style="width:45px;text-align:right;"></th>
+              <th class="num" style="width:85px;">Valor</th>
+              <th class="num" style="width:85px;">Custo</th>
+              <th class="num" style="width:85px;">Ganho</th>
+              <th style="width:38px;text-align:right;"></th>
             </tr>
           </thead>
           <tbody id="prodTableBody"></tbody>
@@ -644,14 +650,14 @@
 
   // ==================== PRODUTOS / SERVIÇOS INICIAIS ====================
   const PRODUTOS_PADRAO = [
-    { desc: 'Sofá 2 Lugares', val: 160 },
-    { desc: 'Sofá 3 Lugares', val: 200 },
-    { desc: 'Sofá Retrátil', val: 250 },
-    { desc: 'Colchão Casal', val: 150 },
-    { desc: 'Colchão Solteiro', val: 110 },
-    { desc: 'Cadeira Estofada', val: 35 },
-    { desc: 'Impermeabilização', val: 180 },
-    { desc: 'Bancos Carro', val: 180 }
+    { desc: 'Sofá 2 Lugares', val: 160, custo: 0 },
+    { desc: 'Sofá 3 Lugares', val: 200, custo: 0 },
+    { desc: 'Sofá Retrátil', val: 250, custo: 0 },
+    { desc: 'Colchão Casal', val: 150, custo: 0 },
+    { desc: 'Colchão Solteiro', val: 110, custo: 0 },
+    { desc: 'Cadeira Estofada', val: 35, custo: 0 },
+    { desc: 'Impermeabilização', val: 180, custo: 0 },
+    { desc: 'Bancos Carro', val: 180, custo: 0 }
   ];
 
   const HORARIOS_AGENDA = ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
@@ -970,18 +976,36 @@
 
     const tbody = document.getElementById('prodTableBody');
     if (lista.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:14px;">Nenhum produto ou serviço cadastrado.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:14px;">Nenhum produto ou serviço cadastrado.</td></tr>';
       return;
     }
-    tbody.innerHTML = lista.map((p, idx) => `
+    tbody.innerHTML = lista.map((p, idx) => {
+      const val = Number(p.val || 0);
+      const custo = Number(p.custo || 0);
+      const ganho = val - custo;
+      return `
       <tr>
         <td><strong>${p.desc}</strong></td>
-        <td class="num">${fmtMoeda(p.val)}</td>
+        <td class="num val-pos">${fmtMoeda(val)}</td>
+        <td class="num val-neg" style="cursor:pointer;" onclick="editarCustoProduto(${idx})" title="Toque para editar o custo">${fmtMoeda(custo)}</td>
+        <td class="num ${ganho >= 0 ? 'val-profit' : 'val-neg'}">${fmtMoeda(ganho)}</td>
         <td style="text-align:right;">
           <button class="btn btn-sm btn-danger" onclick="removerProduto(${idx})" title="Apagar">✕</button>
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
+  }
+
+  async function editarCustoProduto(idx) {
+    const p = dbData.atalhos[idx];
+    if (!p) return;
+    const novo = prompt(`Informe o custo estimado (R$) para "${p.desc}":`, p.custo || '');
+    if (novo === null) return;
+    const valCusto = parseFloat(novo.replace(',', '.')) || 0;
+    p.custo = Math.max(0, valCusto);
+    renderProdutos();
+    await syncSave();
   }
 
   function selecionarProdutoCatalogo() {
@@ -993,6 +1017,7 @@
       document.getElementById('itemDesc').value = item.desc;
       document.getElementById('itemVal').value = item.val;
       document.getElementById('itemQtd').value = '1';
+      document.getElementById('itemDesc').dataset.custo = item.custo || 0;
     }
     sel.value = '';
   }
@@ -1000,11 +1025,13 @@
   async function cadastrarProduto() {
     const desc = document.getElementById('cadProdNome').value.trim();
     const val = parseFloat(document.getElementById('cadProdVal').value) || 0;
-    if (!desc || val <= 0) return alert('Preencha o nome e o valor do produto/serviço.');
+    const custo = parseFloat(document.getElementById('cadProdCusto').value) || 0;
+    if (!desc || val <= 0) return alert('Preencha o nome e o valor cobrado do produto/serviço.');
     if (!dbData.atalhos) dbData.atalhos = [];
-    dbData.atalhos.push({ desc, val });
+    dbData.atalhos.push({ desc, val, custo });
     document.getElementById('cadProdNome').value = '';
     document.getElementById('cadProdVal').value = '';
+    document.getElementById('cadProdCusto').value = '';
     renderProdutos();
     await syncSave();
   }
@@ -1297,12 +1324,18 @@
 
   // ==================== ORÇAMENTO ====================
   function addItem() {
-    const desc = document.getElementById('itemDesc').value.trim();
+    const descEl = document.getElementById('itemDesc');
+    const desc = descEl.value.trim();
     const qtd = parseInt(document.getElementById('itemQtd').value) || 1;
     const val = parseFloat(document.getElementById('itemVal').value) || 0;
     if (!desc || val <= 0) return alert('Escolha um serviço na lista ou preencha a descrição e o valor.');
-    itensOrcamento.push({ desc, qtd, val });
-    document.getElementById('itemDesc').value = '';
+    const catMatch = (dbData.atalhos || []).find(p => p.desc.toLowerCase() === desc.toLowerCase());
+    const custo = descEl.dataset.custo !== undefined && descEl.dataset.custo !== ''
+      ? Number(descEl.dataset.custo)
+      : (catMatch ? Number(catMatch.custo || 0) : 0);
+    itensOrcamento.push({ desc, qtd, val, custo });
+    descEl.value = '';
+    delete descEl.dataset.custo;
     document.getElementById('itemQtd').value = '1';
     document.getElementById('itemVal').value = '';
     renderItens();
