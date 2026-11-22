@@ -411,7 +411,7 @@
           </div>
           <div>
             <label>Valor Unit. (R$)</label>
-            <input type="number" id="itemVal" placeholder="0,00" step="0.01">
+            <input type="text" inputmode="decimal" class="money-input" id="itemVal" placeholder="0,00">
           </div>
         </div>
         <button class="btn btn-accent" style="width:100%;margin-top:8px;" onclick="addItem()">+ Incluir Item na Lista</button>
@@ -438,7 +438,7 @@
         <div class="grid-2 no-print" style="margin-top:10px;">
           <div>
             <label>Desconto (R$)</label>
-            <input type="number" id="orcDesc" value="" placeholder="0,00" min="0" step="0.01" oninput="renderItens()">
+            <input type="text" inputmode="decimal" class="money-input" id="orcDesc" value="" placeholder="0,00" oninput="renderItens()">
           </div>
           <div>
             <label>Observações / Condições</label>
@@ -525,11 +525,11 @@
       <div class="grid-2">
         <div class="form-group">
           <label>Valor Cobrado (R$)</label>
-          <input type="number" id="cadProdVal" placeholder="0,00" step="0.01">
+          <input type="text" inputmode="decimal" class="money-input" id="cadProdVal" placeholder="0,00">
         </div>
         <div class="form-group">
           <label>Custo Estimado (R$)</label>
-          <input type="number" id="cadProdCusto" placeholder="0,00" step="0.01">
+          <input type="text" inputmode="decimal" class="money-input" id="cadProdCusto" placeholder="0,00">
         </div>
       </div>
       <button class="btn btn-primary" onclick="cadastrarProduto()">+ Salvar na Lista</button>
@@ -545,7 +545,7 @@
               <th class="num" style="width:85px;">Valor</th>
               <th class="num" style="width:85px;">Custo</th>
               <th class="num" style="width:85px;">Ganho</th>
-              <th style="width:38px;text-align:right;"></th>
+              <th style="width:74px;text-align:right;">Ações</th>
             </tr>
           </thead>
           <tbody id="prodTableBody"></tbody>
@@ -593,7 +593,7 @@
         </div>
         <div class="form-group">
           <label>Valor (R$)</label>
-          <input type="number" id="finValor" placeholder="0,00" step="0.01">
+          <input type="text" inputmode="decimal" class="money-input" id="finValor" placeholder="0,00">
         </div>
       </div>
       <button class="btn btn-primary" onclick="lancarFinanceiro()">+ Registrar Lançamento</button>
@@ -694,6 +694,32 @@
   document.getElementById('finData').value = hojeISO();
 
   const fmtMoeda = (v) => Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const fmtDecimalBR = (v) => Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function parseMoedaBR(str) {
+    if (typeof str === 'number') return isNaN(str) ? 0 : str;
+    if (!str) return 0;
+    let s = String(str).replace(/[^0-9,.-]/g, '').trim();
+    if (!s) return 0;
+    if (s.includes(',') && s.includes('.')) {
+      s = s.replace(/\./g, '').replace(',', '.');
+    } else if (s.includes(',')) {
+      s = s.replace(',', '.');
+    }
+    const n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+  }
+  function bindMoneyInputs() {
+    document.querySelectorAll('.money-input').forEach(el => {
+      if (el.dataset.moneyBound) return;
+      el.dataset.moneyBound = '1';
+      el.addEventListener('blur', () => {
+        if (el.value.trim() === '') return;
+        const val = parseMoedaBR(el.value);
+        el.value = fmtDecimalBR(val);
+        if (el.id === 'orcDesc') renderItens();
+      });
+    });
+  }
   const fmtDataBR = (iso) => {
     if (!iso) return '--/--';
     const [y, m, d] = iso.split('-');
@@ -968,6 +994,8 @@
   }
 
   // ==================== CATÁLOGO DE PRODUTOS ====================
+  let editandoProdIdx = null;
+
   function renderProdutos() {
     const lista = dbData.atalhos || [];
     const sel = document.getElementById('selectProdutoCatalogo');
@@ -987,9 +1015,10 @@
       <tr>
         <td><strong>${p.desc}</strong></td>
         <td class="num val-pos">${fmtMoeda(val)}</td>
-        <td class="num val-neg" style="cursor:pointer;" onclick="editarCustoProduto(${idx})" title="Toque para editar o custo">${fmtMoeda(custo)}</td>
+        <td class="num val-neg">${fmtMoeda(custo)}</td>
         <td class="num ${ganho >= 0 ? 'val-profit' : 'val-neg'}">${fmtMoeda(ganho)}</td>
-        <td style="text-align:right;">
+        <td style="text-align:right;white-space:nowrap;">
+          <button class="btn btn-sm btn-outline" onclick="editarProduto(${idx})" title="Editar">✎</button>
           <button class="btn btn-sm btn-danger" onclick="removerProduto(${idx})" title="Apagar">✕</button>
         </td>
       </tr>
@@ -997,15 +1026,16 @@
     }).join('');
   }
 
-  async function editarCustoProduto(idx) {
+  function editarProduto(idx) {
     const p = dbData.atalhos[idx];
     if (!p) return;
-    const novo = prompt(`Informe o custo estimado (R$) para "${p.desc}":`, p.custo || '');
-    if (novo === null) return;
-    const valCusto = parseFloat(novo.replace(',', '.')) || 0;
-    p.custo = Math.max(0, valCusto);
-    renderProdutos();
-    await syncSave();
+    editandoProdIdx = idx;
+    document.getElementById('cadProdNome').value = p.desc || '';
+    document.getElementById('cadProdVal').value = fmtDecimalBR(p.val || 0);
+    document.getElementById('cadProdCusto').value = p.custo ? fmtDecimalBR(p.custo) : '';
+    const btn = document.querySelector('#view-produtos .btn-primary');
+    if (btn) btn.textContent = 'Salvar Alteração';
+    document.getElementById('cadProdNome').focus();
   }
 
   function selecionarProdutoCatalogo() {
@@ -1015,7 +1045,7 @@
     const item = dbData.atalhos[Number(idx)];
     if (item) {
       document.getElementById('itemDesc').value = item.desc;
-      document.getElementById('itemVal').value = item.val;
+      document.getElementById('itemVal').value = fmtDecimalBR(item.val);
       document.getElementById('itemQtd').value = '1';
       document.getElementById('itemDesc').dataset.custo = item.custo || 0;
     }
@@ -1024,11 +1054,18 @@
 
   async function cadastrarProduto() {
     const desc = document.getElementById('cadProdNome').value.trim();
-    const val = parseFloat(document.getElementById('cadProdVal').value) || 0;
-    const custo = parseFloat(document.getElementById('cadProdCusto').value) || 0;
+    const val = parseMoedaBR(document.getElementById('cadProdVal').value);
+    const custo = parseMoedaBR(document.getElementById('cadProdCusto').value);
     if (!desc || val <= 0) return alert('Preencha o nome e o valor cobrado do produto/serviço.');
     if (!dbData.atalhos) dbData.atalhos = [];
-    dbData.atalhos.push({ desc, val, custo });
+    if (editandoProdIdx !== null && dbData.atalhos[editandoProdIdx]) {
+      dbData.atalhos[editandoProdIdx] = { desc, val, custo };
+      editandoProdIdx = null;
+      const btn = document.querySelector('#view-produtos .btn-primary');
+      if (btn) btn.textContent = '+ Salvar na Lista';
+    } else {
+      dbData.atalhos.push({ desc, val, custo });
+    }
     document.getElementById('cadProdNome').value = '';
     document.getElementById('cadProdVal').value = '';
     document.getElementById('cadProdCusto').value = '';
@@ -1327,7 +1364,7 @@
     const descEl = document.getElementById('itemDesc');
     const desc = descEl.value.trim();
     const qtd = parseInt(document.getElementById('itemQtd').value) || 1;
-    const val = parseFloat(document.getElementById('itemVal').value) || 0;
+    const val = parseMoedaBR(document.getElementById('itemVal').value);
     if (!desc || val <= 0) return alert('Escolha um serviço na lista ou preencha a descrição e o valor.');
     const catMatch = (dbData.atalhos || []).find(p => p.desc.toLowerCase() === desc.toLowerCase());
     const custo = descEl.dataset.custo !== undefined && descEl.dataset.custo !== ''
@@ -1348,7 +1385,7 @@
 
   function calcTotalOrcamento() {
     const sub = itensOrcamento.reduce((acc, i) => acc + (i.qtd * i.val), 0);
-    const desc = parseFloat(document.getElementById('orcDesc').value) || 0;
+    const desc = parseMoedaBR(document.getElementById('orcDesc').value);
     return { sub, desc, total: Math.max(0, sub - desc) };
   }
 
@@ -1451,7 +1488,7 @@
     const tipo = document.getElementById('finTipo').value;
     const data = document.getElementById('finData').value || hojeISO();
     const desc = document.getElementById('finDesc').value.trim();
-    const valor = parseFloat(document.getElementById('finValor').value) || 0;
+    const valor = parseMoedaBR(document.getElementById('finValor').value);
 
     if (!desc || valor <= 0) return alert('Informe a descrição e um valor válido.');
 
@@ -1562,7 +1599,7 @@
     document.getElementById('cliEnd').value = o.end || '';
     document.getElementById('orcData').value = o.data || hojeISO();
     document.getElementById('orcHora').value = o.hora || '09:00';
-    document.getElementById('orcDesc').value = o.desc ? o.desc : '';
+    document.getElementById('orcDesc').value = o.desc ? fmtDecimalBR(o.desc) : '';
     document.getElementById('orcObs').value = o.obs || '';
     itensOrcamento = JSON.parse(JSON.stringify(o.itens || []));
     renderItens();
@@ -1660,6 +1697,7 @@
   }, 20000);
 
   // Inicialização
+  bindMoneyInputs();
   syncLoad();
 </script>
 </body>
