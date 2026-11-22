@@ -122,7 +122,7 @@
   .sync-ok { background: #16a34a; color: #fff; }
   .sync-warn { background: #d97706; color: #fff; }
 
-  .tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .tabs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; }
   .tab-btn {
     background: rgba(255,255,255,0.12);
     border: none;
@@ -130,7 +130,7 @@
     padding: 8px 2px;
     border-radius: 6px;
     font-weight: 700;
-    font-size: 0.74rem;
+    font-size: 0.68rem;
     cursor: pointer;
     transition: 0.15s;
   }
@@ -421,6 +421,7 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('orcamento', this)">Orçamento</button>
     <button class="tab-btn" onclick="switchTab('agenda', this)">Agenda</button>
+    <button class="tab-btn" onclick="switchTab('clientes', this)">Clientes</button>
     <button class="tab-btn" onclick="switchTab('produtos', this)">Produtos</button>
     <button class="tab-btn" onclick="switchTab('financeiro', this)">Caixa</button>
     <button class="tab-btn" onclick="switchTab('historico', this)">Histórico</button>
@@ -450,6 +451,12 @@
         <div class="card-title">
           <span>Dados do Cliente</span>
           <button class="btn btn-sm btn-outline no-print" onclick="novoOrcamento()">+ Limpar</button>
+        </div>
+        <div class="form-group no-print">
+          <label>Selecionar Cliente Já Cadastrado</label>
+          <select id="selectClienteCatalogo" onchange="selecionarClienteCatalogo()">
+            <option value="">-- Clique na seta para escolher um cliente --</option>
+          </select>
         </div>
         <div class="grid-2">
           <div class="form-group">
@@ -614,6 +621,57 @@
     </div>
   </div>
 
+  <!-- ==================== ABA CLIENTES (AUTO-ORGANIZADA) ==================== -->
+  <div id="view-clientes" class="view">
+    <div class="card">
+      <div class="card-title">
+        <span id="formClienteTitulo">Cadastrar / Editar Cliente</span>
+        <button class="btn btn-sm btn-outline" onclick="limparFormCliente()">Limpar</button>
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Nome do Cliente</label>
+          <input type="text" id="cadCliNome" placeholder="Ex: Maria Silva">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp / Telefone</label>
+          <input type="tel" id="cadCliTel" placeholder="(15) 99999-9999">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Endereço Completo</label>
+        <input type="text" id="cadCliEnd" placeholder="Ex: Rua das Flores, 123 - Centro">
+      </div>
+      <div class="form-group">
+        <label>Observações do Cliente (Opcional)</label>
+        <input type="text" id="cadCliObs" placeholder="Ex: Condomínio X, portaria, pet, preferência de horário">
+      </div>
+      <button class="btn btn-primary" id="btnSalvarCliente" onclick="salvarClienteManual()">+ Salvar Cliente</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>Clientes Cadastrados (<span id="totalClientesCount">0</span>)</span>
+      </div>
+      <div class="form-group">
+        <input type="text" id="buscaClienteInput" placeholder="Buscar por nome, telefone ou endereço..." oninput="renderClientes()">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente / Contato</th>
+              <th>Endereço</th>
+              <th style="text-align:center;width:54px;">Serviços</th>
+              <th style="width:105px;text-align:right;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="clientesTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== ABA 3: CADASTRO DE PRODUTOS / SERVIÇOS ==================== -->
   <div id="view-produtos" class="view">
     <div class="card">
@@ -771,6 +829,7 @@
     orcamentos: {},
     lancamentos: {},
     atalhos: [...PRODUTOS_PADRAO],
+    clientes: {},
     bloqueiosAgenda: {}, // chave "YYYY-MM-DD_HH:MM": true
     notificacoes: []
   };
@@ -1257,6 +1316,215 @@
     }, 'image/png');
   }
 
+
+  // ==================== CLIENTES (AUTO-ORGANIZAÇÃO & SELEÇÃO) ====================
+  let editandoClienteId = null;
+
+  function normalizarChaveCliente(nome, tel) {
+    const telLimpo = String(tel || '').replace(/\D/g, '');
+    if (telLimpo.length >= 8) return 'tel_' + telLimpo;
+    return 'nome_' + String(nome || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '_');
+  }
+
+  function sincronizarClientesDosOrcamentos(salvarRemoto = false) {
+    if (!dbData.clientes || Array.isArray(dbData.clientes)) dbData.clientes = {};
+    let mudou = false;
+
+    Object.values(dbData.orcamentos || {}).forEach(o => {
+      const nome = (o.nome || '').trim();
+      if (!nome || nome.toLowerCase() === 'cliente avulso') return;
+      const tel = (o.tel || '').trim();
+      const end = (o.end || '').trim();
+      const chave = normalizarChaveCliente(nome, tel);
+
+      // Verifica se já existe cliente correspondente por ID, telefone ou nome
+      let existente = dbData.clientes[chave] || Object.values(dbData.clientes).find(c => {
+        const cTel = String(c.tel || '').replace(/\D/g, '');
+        const oTel = tel.replace(/\D/g, '');
+        if (oTel.length >= 8 && cTel === oTel) return true;
+        return (c.nome || '').trim().toLowerCase() === nome.toLowerCase();
+      });
+
+      if (!existente) {
+        dbData.clientes[chave] = {
+          id: chave,
+          nome,
+          tel,
+          end,
+          obs: '',
+          updatedAt: o.updatedAt || Date.now()
+        };
+        mudou = true;
+      } else {
+        // Atualiza telefone ou endereço caso estejam vazios ou mais recentes
+        if (!existente.tel && tel) { existente.tel = tel; mudou = true; }
+        if (!existente.end && end) { existente.end = end; mudou = true; }
+        if ((o.updatedAt || 0) > (existente.updatedAt || 0)) {
+          if (tel) existente.tel = tel;
+          if (end) existente.end = end;
+          existente.nome = nome;
+          existente.updatedAt = o.updatedAt;
+          mudou = true;
+        }
+      }
+    });
+
+    if (mudou && salvarRemoto) {
+      syncSave();
+    }
+  }
+
+  function getClientesOrdenados() {
+    sincronizarClientesDosOrcamentos(false);
+    return Object.values(dbData.clientes || {}).sort((a, b) =>
+      (a.nome || '').localeCompare(b.nome || '', 'pt-BR', { sensitivity: 'base' })
+    );
+  }
+
+  function renderClientes() {
+    const todos = getClientesOrdenados();
+    const sel = document.getElementById('selectClienteCatalogo');
+    if (sel) {
+      sel.innerHTML = `<option value="">-- Clique na seta para escolher (${todos.length} clientes) --</option>` +
+        todos.map(c => {
+          const infoExtra = c.tel ? ` • ${c.tel}` : (c.end ? ` • ${c.end}` : '');
+          return `<option value="${c.id}">${c.nome}${infoExtra}</option>`;
+        }).join('');
+    }
+
+    const countEl = document.getElementById('totalClientesCount');
+    if (countEl) countEl.textContent = todos.length;
+
+    const tbody = document.getElementById('clientesTableBody');
+    if (!tbody) return;
+
+    const termo = (document.getElementById('buscaClienteInput')?.value || '').trim().toLowerCase();
+    const filtrados = termo
+      ? todos.filter(c =>
+          (c.nome || '').toLowerCase().includes(termo) ||
+          (c.tel || '').toLowerCase().includes(termo) ||
+          (c.end || '').toLowerCase().includes(termo)
+        )
+      : todos;
+
+    if (filtrados.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:14px;">Nenhum cliente encontrado.</td></tr>';
+      return;
+    }
+
+    // Conta histórico de orçamentos/serviços por cliente
+    const orcs = Object.values(dbData.orcamentos || {});
+
+    tbody.innerHTML = filtrados.map(c => {
+      const cTel = String(c.tel || '').replace(/\D/g, '');
+      const qtdServicos = orcs.filter(o => {
+        const oTel = String(o.tel || '').replace(/\D/g, '');
+        if (cTel.length >= 8 && oTel === cTel) return true;
+        return (o.nome || '').trim().toLowerCase() === (c.nome || '').trim().toLowerCase();
+      }).length;
+
+      return `
+        <tr>
+          <td>
+            <strong>${c.nome}</strong>
+            ${c.tel ? `<br><span style="font-size:0.74rem;color:#15803d;font-weight:700;">${c.tel}</span>` : ''}
+            ${c.obs ? `<br><span style="font-size:0.7rem;color:var(--muted);">${c.obs}</span>` : ''}
+          </td>
+          <td style="font-size:0.78rem;color:#334155;">${c.end || '<span style="color:#94a3b8;">Sem endereço</span>'}</td>
+          <td style="text-align:center;font-weight:800;">${qtdServicos}</td>
+          <td style="text-align:right;white-space:nowrap;">
+            <button class="btn btn-sm btn-accent" onclick="usarClienteNoOrcamento('${c.id}')" title="Fazer Orçamento">Orçar</button>
+            <button class="btn btn-sm btn-outline" onclick="editarCliente('${c.id}')" title="Editar">✎</button>
+            <button class="btn btn-sm btn-danger" onclick="excluirCliente('${c.id}')" title="Excluir">✕</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function selecionarClienteCatalogo() {
+    const sel = document.getElementById('selectClienteCatalogo');
+    const id = sel.value;
+    if (!id) return;
+    const c = (dbData.clientes || {})[id];
+    if (c) {
+      document.getElementById('cliNome').value = c.nome || '';
+      document.getElementById('cliTel').value = c.tel || '';
+      document.getElementById('cliEnd').value = c.end || '';
+      if (c.obs && !document.getElementById('orcObs').value.trim()) {
+        document.getElementById('orcObs').value = c.obs;
+      }
+    }
+    sel.value = '';
+  }
+
+  function usarClienteNoOrcamento(id) {
+    const c = (dbData.clientes || {})[id];
+    if (!c) return;
+    novoOrcamento();
+    document.getElementById('cliNome').value = c.nome || '';
+    document.getElementById('cliTel').value = c.tel || '';
+    document.getElementById('cliEnd').value = c.end || '';
+    if (c.obs) document.getElementById('orcObs').value = c.obs;
+    switchTab('orcamento', document.querySelectorAll('.tab-btn')[0]);
+  }
+
+  function editarCliente(id) {
+    const c = (dbData.clientes || {})[id];
+    if (!c) return;
+    editandoClienteId = id;
+    document.getElementById('cadCliNome').value = c.nome || '';
+    document.getElementById('cadCliTel').value = c.tel || '';
+    document.getElementById('cadCliEnd').value = c.end || '';
+    document.getElementById('cadCliObs').value = c.obs || '';
+    document.getElementById('formClienteTitulo').textContent = 'Editando Cliente';
+    document.getElementById('btnSalvarCliente').textContent = 'Salvar Alterações do Cliente';
+    window.scrollTo(0, 0);
+  }
+
+  function limparFormCliente() {
+    editandoClienteId = null;
+    document.getElementById('cadCliNome').value = '';
+    document.getElementById('cadCliTel').value = '';
+    document.getElementById('cadCliEnd').value = '';
+    document.getElementById('cadCliObs').value = '';
+    document.getElementById('formClienteTitulo').textContent = 'Cadastrar / Editar Cliente';
+    document.getElementById('btnSalvarCliente').textContent = '+ Salvar Cliente';
+  }
+
+  async function salvarClienteManual() {
+    const nome = document.getElementById('cadCliNome').value.trim();
+    const tel = document.getElementById('cadCliTel').value.trim();
+    const end = document.getElementById('cadCliEnd').value.trim();
+    const obs = document.getElementById('cadCliObs').value.trim();
+
+    if (!nome) return alert('Informe o nome do cliente.');
+    if (!dbData.clientes || Array.isArray(dbData.clientes)) dbData.clientes = {};
+
+    const id = editandoClienteId || normalizarChaveCliente(nome, tel);
+    dbData.clientes[id] = {
+      id,
+      nome,
+      tel,
+      end,
+      obs,
+      updatedAt: Date.now()
+    };
+
+    limparFormCliente();
+    renderClientes();
+    await syncSave();
+  }
+
+  async function excluirCliente(id) {
+    const c = (dbData.clientes || {})[id];
+    if (!c) return;
+    if (!confirm(`Remover "${c.nome}" da lista de clientes?`)) return;
+    delete dbData.clientes[id];
+    renderClientes();
+    await syncSave();
+  }
+
   // ==================== CATÁLOGO DE PRODUTOS ====================
   let editandoProdIdx = null;
 
@@ -1352,6 +1620,7 @@
     document.getElementById('view-' + tab).classList.add('active');
     btn.classList.add('active');
     if (tab === 'agenda') renderAgenda();
+    if (tab === 'clientes') renderClientes();
     if (tab === 'produtos') renderProdutos();
     if (tab === 'financeiro') renderFinanceiro();
     if (tab === 'historico') renderHistorico();
@@ -1705,6 +1974,26 @@
     };
 
     dbData.orcamentos[id] = registro;
+    if (nome && nome.toLowerCase() !== 'cliente avulso') {
+      if (!dbData.clientes || Array.isArray(dbData.clientes)) dbData.clientes = {};
+      const cliKey = normalizarChaveCliente(nome, tel);
+      const existente = dbData.clientes[cliKey] || Object.values(dbData.clientes).find(c => {
+        const cTel = String(c.tel || '').replace(/\D/g, '');
+        const oTel = tel.replace(/\D/g, '');
+        if (oTel.length >= 8 && cTel === oTel) return true;
+        return (c.nome || '').trim().toLowerCase() === nome.toLowerCase();
+      });
+      const targetId = existente ? existente.id : cliKey;
+      dbData.clientes[targetId] = {
+        id: targetId,
+        nome,
+        tel: tel || (existente ? existente.tel : ''),
+        end: end || (existente ? existente.end : ''),
+        obs: (existente ? existente.obs : '') || '',
+        updatedAt: Date.now()
+      };
+      renderClientes();
+    }
 
     if (status === 'concluido') {
       const finId = 'fin_' + id;
@@ -1894,12 +2183,14 @@
           orcamentos: parsed.orcamentos || {},
           lancamentos: parsed.lancamentos || {},
           atalhos: Array.isArray(parsed.atalhos) ? parsed.atalhos : [...PRODUTOS_PADRAO],
+          clientes: (parsed.clientes && !Array.isArray(parsed.clientes)) ? parsed.clientes : {},
           bloqueiosAgenda: parsed.bloqueiosAgenda || {},
           notificacoes: Array.isArray(parsed.notificacoes) ? parsed.notificacoes : []
         };
       } catch (e) {}
     }
 
+    renderClientes();
     renderProdutos();
     renderFinanceiro();
     renderAgenda();
@@ -1924,10 +2215,12 @@
           orcamentos: remote.orcamentos || {},
           lancamentos: remote.lancamentos || {},
           atalhos: Array.isArray(remote.atalhos) ? remote.atalhos : dbData.atalhos,
+          clientes: (remote.clientes && !Array.isArray(remote.clientes)) ? remote.clientes : (dbData.clientes || {}),
           bloqueiosAgenda: remote.bloqueiosAgenda || {},
           notificacoes: Array.isArray(remote.notificacoes) ? remote.notificacoes : []
         };
         localStorage.setItem('drlimpeza_data', JSON.stringify(dbData));
+        renderClientes();
         renderProdutos();
         renderFinanceiro();
         renderAgenda();
