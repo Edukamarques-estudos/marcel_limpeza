@@ -6,15 +6,15 @@
 <title>Doutor Limpeza - Orçamentos, Agenda & Financeiro</title>
 <style>
   :root {
-    --primary: #121619;
-    --primary-dark: #080a0c;
-    --accent: #76c800;
-    --lime: #8ce000;
-    --bg: #f3f5f4;
+    --primary: #1f2937;
+    --primary-dark: #111827;
+    --accent: #65a30d;
+    --lime: #84cc16;
+    --bg: #f8fafc;
     --card: #ffffff;
-    --text: #121619;
-    --muted: #525b56;
-    --border: #cbd5d0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #cbd5e1;
     --green: #15803d;
     --green-bg: #dcfce7;
     --red: #b91c1c;
@@ -25,26 +25,27 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
 
-  /* Header & Tabs */
+  /* Header & Tabs (Tema Claro e Leve) */
   header {
-    background: var(--primary);
-    color: #fff;
-    padding: 12px 14px;
+    background: #ffffff;
+    color: var(--text);
+    padding: 10px 14px;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    border-bottom: 2px solid var(--lime);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
-  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .brand-wrap { display: flex; flex-direction: column; }
-  .brand { font-size: 1.15rem; font-weight: 900; letter-spacing: 0.3px; color: #8ce000; }
-  .brand-sub { font-size: 0.78rem; color: #ffffff; font-weight: 600; margin-top: 1px; }
+  .brand { font-size: 1.15rem; font-weight: 900; letter-spacing: 0.3px; color: #3f6212; }
+  .brand-sub { font-size: 0.78rem; color: var(--muted); font-weight: 600; margin-top: 1px; }
   .brand-row { display: flex; align-items: center; gap: 8px; position: relative; }
   .notif-wrap { position: relative; display: inline-flex; align-items: center; }
   .notif-btn {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(140,224,0,0.4);
-    color: #8ce000;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #3f6212;
     border-radius: 50%;
     width: 28px;
     height: 28px;
@@ -55,7 +56,7 @@
     position: relative;
     padding: 0;
   }
-  .notif-btn:active { background: rgba(255,255,255,0.22); }
+  .notif-btn:active { background: #e2e8f0; }
   .notif-count {
     position: absolute;
     top: -4px;
@@ -71,7 +72,7 @@
     display: none;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid #121619;
+    border: 1.5px solid #ffffff;
   }
   .notif-dropdown {
     display: none;
@@ -81,20 +82,21 @@
     width: 285px;
     max-width: 86vw;
     background: #ffffff;
-    color: #121619;
+    color: var(--text);
     border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.32);
-    border: 1px solid #cbd5d0;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.14);
+    border: 1px solid #cbd5e1;
     z-index: 300;
     overflow: hidden;
   }
   .notif-dropdown.open { display: block; }
   .notif-header {
-    background: #121619;
-    color: #8ce000;
+    background: #f1f5f9;
+    color: #3f6212;
     padding: 8px 12px;
     font-size: 0.76rem;
     font-weight: 800;
+    border-bottom: 1px solid #e2e8f0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -102,7 +104,7 @@
   .notif-clear-btn {
     background: transparent;
     border: none;
-    color: #e2e8f0;
+    color: var(--muted);
     font-size: 0.68rem;
     text-decoration: underline;
     cursor: pointer;
@@ -113,33 +115,31 @@
     border-bottom: 1px solid #e2e8f0;
     cursor: pointer;
     font-size: 0.78rem;
-    transition: 0.12s;
   }
   .notif-item:hover, .notif-item:active { background: #ecfccb; }
   .notif-item:last-child { border-bottom: none; }
-  .notif-empty { padding: 14px; text-align: center; color: #525b56; font-size: 0.78rem; }
-  .sync-badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; background: rgba(255,255,255,0.18); font-weight: 600; }
-  .sync-ok { background: #16a34a; color: #fff; }
-  .sync-warn { background: #d97706; color: #fff; }
+  .notif-empty { padding: 14px; text-align: center; color: var(--muted); font-size: 0.78rem; }
+  .sync-badge { font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; background: #f1f5f9; color: var(--muted); font-weight: 700; }
+  .sync-ok { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+  .sync-warn { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
 
   .tabs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
   .tab-btn {
-    background: rgba(255,255,255,0.12);
-    border: none;
-    color: #e2e8f0;
-    padding: 8px 2px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    padding: 7px 2px;
     border-radius: 6px;
     font-weight: 700;
     font-size: 0.65rem;
     cursor: pointer;
-    transition: 0.15s;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .tab-btn.active { background: #8ce000; color: #121619; font-weight: 900; }
-  .tab-new { border: 1px solid rgba(140,224,0,0.55); color: #8ce000; }
-  .tab-new.active { background: #8ce000; color: #121619; }
+  .tab-btn.active { background: #84cc16; border-color: #65a30d; color: #0f172a; font-weight: 900; }
+  .tab-new { border: 1px solid #84cc16; color: #3f6212; background: #f7fee7; }
+  .tab-new.active { background: #84cc16; color: #0f172a; }
 
   /* Containers */
   .container { max-width: 720px; margin: 0 auto; padding: 12px; }
@@ -151,10 +151,9 @@
     border-radius: 10px;
     padding: 14px;
     margin-bottom: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     border: 1px solid #e2e8f0;
   }
-  .card-title { font-size: 0.92rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .card-title { font-size: 0.92rem; font-weight: 800; color: #1e293b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
 
   /* Forms */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -170,7 +169,7 @@
     background: #fff;
     color: var(--text);
   }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
 
   /* Buttons */
   .btn {
@@ -184,12 +183,11 @@
     align-items: center;
     justify-content: center;
     gap: 5px;
-    transition: 0.15s;
   }
-  .btn-primary { background: var(--primary); color: #8ce000; width: 100%; }
-  .btn-primary:active { background: var(--primary-dark); }
-  .btn-accent { background: #8ce000; color: #121619; font-weight: 800; }
-  .btn-whatsapp { background: #8ce000; color: #121619; font-weight: 900; width: 100%; font-size: 0.92rem; padding: 12px; }
+  .btn-primary { background: #1e293b; color: #a3e635; width: 100%; }
+  .btn-primary:active { background: #0f172a; }
+  .btn-accent { background: #84cc16; color: #0f172a; font-weight: 800; }
+  .btn-whatsapp { background: #25D366; color: #ffffff; font-weight: 900; width: 100%; font-size: 0.92rem; padding: 12px; }
   .btn-outline { background: #fff; border: 1px solid var(--border); color: var(--text); }
   .btn-sm { padding: 5px 8px; font-size: 0.76rem; }
   .btn-danger { background: var(--red-bg); color: var(--red); }
@@ -198,7 +196,7 @@
   .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; }
   table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
   th {
-    background: #e2e8f0;
+    background: #f1f5f9;
     color: #0f172a;
     font-weight: 800;
     text-align: left;
@@ -216,8 +214,8 @@
 
   /* Quote Total Box */
   .total-box {
-    background: #f8fafc;
-    border: 2px solid var(--primary);
+    background: #f7fee7;
+    border: 2px solid #84cc16;
     border-radius: 8px;
     padding: 12px;
     margin: 12px 0;
@@ -225,8 +223,8 @@
     justify-content: space-between;
     align-items: center;
   }
-  .total-label { font-size: 0.85rem; font-weight: 800; color: var(--muted); }
-  .total-value { font-size: 1.4rem; font-weight: 900; color: var(--primary); }
+  .total-label { font-size: 0.85rem; font-weight: 800; color: #3f6212; }
+  .total-value { font-size: 1.4rem; font-weight: 900; color: #1e293b; }
 
   /* KPI Cards */
   .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
@@ -287,19 +285,20 @@
     font-weight: 700;
   }
 
-  /* ==================== ABA NEW (NOVIDADES & TUTORIAL) ==================== */
+  /* ==================== ABA NEW (NOVIDADES & TUTORIAL - LEVE) ==================== */
   .new-hero {
-    background: linear-gradient(135deg, #121619 0%, #22292e 100%);
-    color: #fff;
+    background: #f7fee7;
+    color: #1e293b;
     border-radius: 10px;
     padding: 14px;
     margin-bottom: 12px;
-    border-bottom: 3px solid #8ce000;
+    border: 1px solid #bef264;
+    border-left: 4px solid #65a30d;
   }
   .new-badge {
     display: inline-block;
-    background: #8ce000;
-    color: #121619;
+    background: #84cc16;
+    color: #0f172a;
     font-size: 0.68rem;
     font-weight: 900;
     padding: 2px 8px;
@@ -308,13 +307,13 @@
     margin-bottom: 6px;
   }
   .update-item {
-    border-left: 3px solid #8ce000;
+    border-left: 3px solid #84cc16;
     padding-left: 10px;
     margin-bottom: 12px;
   }
   .update-item:last-child { margin-bottom: 0; }
   .update-date { font-size: 0.72rem; font-weight: 800; color: var(--green); }
-  .update-title { font-size: 0.9rem; font-weight: 800; color: var(--primary); margin: 2px 0; }
+  .update-title { font-size: 0.9rem; font-weight: 800; color: #1e293b; margin: 2px 0; }
   .update-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
   .tut-step {
     display: flex;
@@ -325,8 +324,9 @@
   }
   .tut-step:last-child { border-bottom: none; padding-bottom: 0; }
   .tut-num {
-    background: #121619;
-    color: #8ce000;
+    background: #ecfccb;
+    color: #3f6212;
+    border: 1px solid #a3e635;
     font-weight: 900;
     font-size: 0.78rem;
     min-width: 24px;
@@ -337,51 +337,52 @@
     justify-content: center;
     margin-top: 2px;
   }
-  .tut-body h4 { font-size: 0.86rem; font-weight: 800; color: var(--primary); margin-bottom: 2px; }
+  .tut-body h4 { font-size: 0.86rem; font-weight: 800; color: #1e293b; margin-bottom: 2px; }
   .tut-body p { font-size: 0.79rem; color: var(--muted); line-height: 1.4; }
 
-  /* ==================== AGENDA VISUAL (GRADE SEMANAL) ==================== */
+  /* ==================== AGENDA VISUAL (GRADE SEMANAL LEVE) ==================== */
   .agenda-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #121619;
-    color: #fff;
+    background: #f1f5f9;
+    color: #1e293b;
+    border: 1px solid #cbd5e1;
     padding: 8px 10px;
     border-radius: 8px;
     margin-bottom: 10px;
   }
   .agenda-nav button {
-    background: rgba(255,255,255,0.14);
-    border: none;
-    color: #8ce000;
-    font-weight: 900;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #3f6212;
+    font-weight: 800;
     padding: 6px 10px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.82rem;
   }
-  .agenda-week-title { font-size: 0.85rem; font-weight: 800; text-align: center; color: #fff; }
-  .agenda-legend { display: flex; gap: 12px; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; justify-content: center; }
+  .agenda-week-title { font-size: 0.85rem; font-weight: 800; text-align: center; color: #1e293b; }
+  .agenda-legend { display: flex; gap: 12px; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; justify-content: center; flex-wrap: wrap; }
   .leg-item { display: flex; align-items: center; gap: 5px; }
   .leg-box { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
 
   .agenda-grid-wrap { overflow-x: hidden; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
   .agenda-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
   .agenda-table th {
-    background: #121619;
-    color: #fff;
+    background: #f1f5f9;
+    color: #1e293b;
     text-align: center;
     padding: 4px 1px;
     font-size: 0.58rem;
-    border: 1px solid #2a3137;
+    border: 1px solid #cbd5e1;
     position: sticky;
     top: 0;
     overflow: hidden;
   }
-  .agenda-table th.col-hora { width: 34px; background: #1e2429; color: #8ce000; }
+  .agenda-table th.col-hora { width: 34px; background: #ecfccb; color: #3f6212; }
   .agenda-table td {
-    border: 1px solid #cbd5d0;
+    border: 1px solid #cbd5e1;
     padding: 1.5px;
     height: 34px;
     vertical-align: middle;
@@ -392,7 +393,7 @@
     background: #f8fafc;
     font-weight: 800;
     font-size: 0.58rem;
-    color: #121619;
+    color: #1e293b;
     padding: 2px 1px;
   }
   .slot-btn {
@@ -413,7 +414,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: 0.12s;
   }
   .slot-livre {
     background: #dcfce7;
@@ -427,15 +427,15 @@
     border: 1px solid #fca5a5;
   }
   .slot-aprovado {
-    background: #121619;
-    color: #8ce000;
-    border: 1px solid #8ce000;
+    background: #ecfccb;
+    color: #3f6212;
+    border: 1.5px solid #65a30d;
   }
   .slot-sub { font-size: 0.48rem; font-weight: 600; opacity: 0.9; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  /* Screenshot Mode (Tela do Print / Gerador de Imagem) */
+  /* Screenshot Mode (Tela do Print / Gerador de Imagem Leve) */
   body.print-mode header, body.print-mode .no-print { display: none !important; }
-  body.print-mode { background: #e2e8f0; padding: 0; }
+  body.print-mode { background: #f1f5f9; padding: 0; }
   body.print-mode .container { max-width: 440px; padding: 12px 12px 84px 12px; }
   body.print-mode input {
     border: none;
@@ -448,7 +448,7 @@
     background: #ffffff;
     border-radius: 12px;
     padding: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    border: 1px solid #cbd5e1;
   }
   body.print-mode .card {
     box-shadow: none;
@@ -459,9 +459,9 @@
 
   .quote-preview-banner {
     display: none;
-    background: linear-gradient(135deg, #121619 0%, #22292e 100%);
-    border-bottom: 3px solid #8ce000;
-    color: #fff;
+    background: #f7fee7;
+    border: 1.5px solid #84cc16;
+    color: #1e293b;
     padding: 14px 16px;
     border-radius: 8px;
     justify-content: space-between;
@@ -478,10 +478,11 @@
     transform: translateX(-50%);
     gap: 8px;
     z-index: 999;
-    background: rgba(15, 23, 42, 0.95);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
     padding: 8px 12px;
     border-radius: 30px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
     white-space: nowrap;
   }
   body.print-mode .print-floating-bar { display: flex; }
@@ -502,8 +503,8 @@
 <body>
 
 <div class="print-floating-bar">
-  <button style="background:#8ce000;color:#121619;" onclick="enviarOrcamentoWhatsApp()">Enviar no WhatsApp</button>
-  <button style="background:#e2e8f0;color:#0f172a;" onclick="togglePrintMode(false)">Voltar</button>
+  <button style="background:#25D366;color:#ffffff;" onclick="enviarOrcamentoWhatsApp()">Enviar no WhatsApp</button>
+  <button style="background:#f1f5f9;color:#1e293b;border:1px solid #cbd5e1;" onclick="togglePrintMode(false)">Voltar</button>
 </div>
 
 <header>
@@ -547,15 +548,15 @@
     <div id="printCaptureArea">
       <div class="quote-preview-banner">
         <div>
-          <div style="font-size:1.15rem;font-weight:900;letter-spacing:0.4px;color:#8ce000;">DOUTOR LIMPEZA</div>
-          <div style="font-size:0.75rem;opacity:0.95;font-weight:700;margin-top:2px;"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;fill:#25D366;" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-5.825 4.74-10.563 10.564-10.563 5.826 0 10.564 4.738 10.564 10.564 0 5.826-4.74 10.562-10.567 10.562z"/></svg>(15) 99735-3390 - Marcel</div>
-          <div style="font-size:0.7rem;color:#d9f99d;">Lavagem e Higienização de Estofados e Colchões</div>
+          <div style="font-size:1.15rem;font-weight:900;letter-spacing:0.4px;color:#3f6212;">DOUTOR LIMPEZA</div>
+          <div style="font-size:0.75rem;color:#1e293b;font-weight:700;margin-top:2px;"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;fill:#25D366;" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-5.825 4.74-10.563 10.564-10.563 5.826 0 10.564 4.738 10.564 10.564 0 5.826-4.74 10.562-10.567 10.562z"/></svg>(15) 99735-3390 - Marcel</div>
+          <div style="font-size:0.7rem;color:#4d7c0f;">Lavagem e Higienização de Estofados e Colchões</div>
         </div>
         <div style="text-align:right;font-size:0.78rem;">
-          <div style="font-weight:800;">ORÇAMENTO</div>
-          <div id="printDate">--/--/----</div>
-          <div id="printHora" style="font-weight:700;color:#8ce000;"></div>
-          <div style="font-size:0.66rem;opacity:0.88;margin-top:2px;">Orçamento válido por 10 dias</div>
+          <div style="font-weight:800;color:#1e293b;">ORÇAMENTO</div>
+          <div id="printDate" style="color:#475569;">--/--/----</div>
+          <div id="printHora" style="font-weight:800;color:#3f6212;"></div>
+          <div style="font-size:0.66rem;color:#64748b;margin-top:2px;">Orçamento válido por 10 dias</div>
         </div>
       </div>
 
@@ -691,7 +692,7 @@
     <div class="card">
       <div class="card-title">
         <span>Controle de Horários</span>
-        <button class="btn btn-sm btn-accent" onclick="gerarPrintAgenda()">Print Agenda Livre</button>
+        <button class="btn btn-sm" style="background:#25D366;color:#fff;font-weight:800;" onclick="enviarAgendaDiretoWhatsApp()">Print Agenda Livre (WhatsApp)</button>
       </div>
 
       <div class="agenda-nav">
@@ -703,7 +704,7 @@
       <div class="agenda-legend">
         <div class="leg-item"><span class="leg-box" style="background:#dcfce7;border:1px solid #86efac;"></span> Livre (clique p/ ocupar)</div>
         <div class="leg-item"><span class="leg-box" style="background:#fee2e2;border:1px solid #fca5a5;"></span> ✕ Ocupado</div>
-        <div class="leg-item"><span class="leg-box" style="background:#121619;border:1px solid #8ce000;"></span> Aprovado</div>
+        <div class="leg-item"><span class="leg-box" style="background:#ecfccb;border:1.5px solid #65a30d;"></span> Aprovado</div>
       </div>
 
       <div class="agenda-grid-wrap">
@@ -911,7 +912,6 @@
         </div>
       </div>
 
-      <!-- Resumo rápido por forma de pagamento no período filtrado -->
       <div class="extrato-resumo-pag" id="resumoPorFormaPag"></div>
 
       <div class="table-wrap">
@@ -954,26 +954,26 @@
   <div id="view-novidades" class="view">
     <div class="new-hero">
       <span class="new-badge">Novidades & Guia</span>
-      <div style="font-size:1.05rem;font-weight:900;color:#8ce000;">Atualizações do Sistema Doutor Limpeza</div>
-      <div style="font-size:0.78rem;color:#e2e8f0;margin-top:3px;">Confira as melhorias recentes do aplicativo e o tutorial rápido para aproveitar todas as ferramentas.</div>
+      <div style="font-size:1.05rem;font-weight:900;color:#3f6212;">Atualizações do Sistema Doutor Limpeza</div>
+      <div style="font-size:0.78rem;color:#475569;margin-top:3px;">Confira as melhorias recentes do aplicativo e o tutorial rápido para aproveitar todas as ferramentas.</div>
     </div>
 
     <div class="card">
       <div class="card-title"><span>O Que Há de Novo</span></div>
 
       <div class="update-item">
-        <div class="update-date">ATUALIZAÇÃO RECENTE • NOVEMBRO 2026</div>
-        <div class="update-title">Novo Controle de Caixa em Formato Extrato & Formas de Pagamento</div>
+        <div class="update-date">ATUALIZAÇÃO RECENTE</div>
+        <div class="update-title">Envio Direto da Agenda Livre para o WhatsApp & Visual Mais Leve</div>
         <div class="update-desc">
-          A aba <strong>Caixa</strong> agora funciona como um extrato completo: filtre entradas e saídas por <strong>Data Inicial, Data Final e Forma de Pagamento</strong> (Pix, Dinheiro, Cartão, etc.). Você também pode cadastrar suas próprias formas de recebimento e registrar <strong>Compras de Mercadorias</strong> (produtos de limpeza, insumos e combustível) direto no caixa.
+          O botão <strong>Print Agenda Livre (WhatsApp)</strong> agora gera a grade de horários disponíveis, copia a imagem e abre direto o compartilhamento do WhatsApp sem salvar arquivos desnecessários. Além disso, o sistema está com visual claro e muito mais rápido para abrir.
         </div>
       </div>
 
       <div class="update-item">
-        <div class="update-date">MELHORIA NO RECEBIMENTO</div>
-        <div class="update-title">Escolha da Forma de Recebimento ao Aprovar Orçamentos</div>
+        <div class="update-date">CONTROLE FINANCEIRO</div>
+        <div class="update-title">Extrato de Caixa, Formas de Pagamento e Compra de Mercadorias</div>
         <div class="update-desc">
-          Ao aprovar um orçamento, você já informa como o cliente vai pagar (Pix, Cartão, Dinheiro...) e o valor entra identificado no extrato do Caixa. Caso o cliente mude a forma na hora do serviço, basta alterar direto na linha do extrato.
+          A aba <strong>Caixa</strong> funciona como extrato completo com filtros por <strong>Data Inicial, Data Final e Forma de Pagamento</strong> (Pix, Dinheiro, Cartão, etc.), cadastro de formas de recebimento e registro de <strong>Compras de Mercadorias</strong>.
         </div>
       </div>
 
@@ -981,7 +981,7 @@
         <div class="update-date">ALERTAS INTELIGENTES</div>
         <div class="update-title">Sino de Lembretes Antecipados (24h, 2h e 30min antes)</div>
         <div class="update-desc">
-          O ícone de sino no topo avisa automaticamente quando você tem serviços aprovados chegando, mostrando cliente, horário e endereço para você não perder nenhum atendimento.
+          O ícone de sino no topo avisa automaticamente quando você tem serviços aprovados chegando, mostrando cliente, horário e endereço.
         </div>
       </div>
     </div>
@@ -1008,8 +1008,8 @@
       <div class="tut-step">
         <div class="tut-num">3</div>
         <div class="tut-body">
-          <h4>Gerenciar Horários Livres e Compartilhar Agenda</h4>
-          <p>Na aba <strong>Agenda</strong>, toque em qualquer horário verde para bloquear como <em>Ocupado</em> (sem expor nomes de clientes). Use o botão <strong>Print Agenda Livre</strong> para enviar sua grade da semana aos clientes.</p>
+          <h4>Gerenciar Horários Livres e Enviar Direto no WhatsApp</h4>
+          <p>Na aba <strong>Agenda</strong>, toque em qualquer horário verde para bloquear como <em>Ocupado</em> (sem expor nomes de clientes). Use o botão <strong>Print Agenda Livre (WhatsApp)</strong> para enviar sua grade da semana direto no WhatsApp.</p>
         </div>
       </div>
 
@@ -1346,7 +1346,7 @@
     dias.forEach(d => {
       const diaNome = DIAS_SEMANA_CURTO[d.getDay()];
       const diaNum = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
-      html += `<th>${diaNome}<br><span style="font-weight:600;color:#8ce000;">${diaNum}</span></th>`;
+      html += `<th>${diaNome}<br><span style="font-weight:700;color:#3f6212;">${diaNum}</span></th>`;
     });
     html += `</tr></thead><tbody>`;
 
@@ -1402,8 +1402,8 @@
     }
   }
 
-  // ==================== GERAR IMAGEM DO PRINT DA AGENDA ====================
-  function gerarPrintAgenda() {
+  // ==================== ENVIO DIRETO DA AGENDA LIVRE PARA O WHATSAPP (SEM BAIXAR FOTO) ====================
+  function enviarAgendaDiretoWhatsApp() {
     const dias = getDiasSemanaAtual();
     const aprovadosMap = getAprovadosMap();
     const bloqueios = dbData.bloqueiosAgenda || {};
@@ -1427,38 +1427,44 @@
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
+    // Cabeçalho Claro e Limpo
     roundRect(ctx, pad, pad, innerW, headerH, 12);
-    ctx.fillStyle = '#121619';
+    ctx.fillStyle = '#f7fee7';
     ctx.fill();
+    ctx.strokeStyle = '#84cc16';
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#8ce000';
+    ctx.fillStyle = '#3f6212';
     ctx.font = '900 20px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('DOUTOR LIMPEZA', pad + 16, pad + 32);
 
-    drawWhatsAppHeaderLine(ctx, pad + 16, pad + 52);
+    drawWhatsAppHeaderLine(ctx, pad + 16, pad + 52, '#1e293b');
 
-    ctx.fillStyle = '#d9f99d';
-    ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = '#4d7c0f';
+    ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('Escolha um horário livre e nos avise para reservar!', pad + 16, pad + 72);
 
     const iniStr = fmtDataBR(toISODate(dias[0]));
     const fimStr = fmtDataBR(toISODate(dias[dias.length - 1]));
     ctx.textAlign = 'right';
-    ctx.fillStyle = '#8ce000';
+    ctx.fillStyle = '#3f6212';
     ctx.font = '800 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('DISPONIBILIDADE', width - pad - 16, pad + 34);
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#1e293b';
     ctx.font = '700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText(`${iniStr} a ${fimStr}`, width - pad - 16, pad + 54);
 
     const horaColW = 64;
     const dayColW = (innerW - horaColW) / dias.length;
 
-    ctx.fillStyle = '#121619';
+    ctx.fillStyle = '#f1f5f9';
     ctx.fillRect(pad, tableTop, innerW, tableHeaderH);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.strokeRect(pad, tableTop, innerW, tableHeaderH);
 
-    ctx.fillStyle = '#8ce000';
+    ctx.fillStyle = '#3f6212';
     ctx.font = '800 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('HORA', pad + horaColW / 2, tableTop + 25);
@@ -1467,10 +1473,10 @@
       const cx = pad + horaColW + idx * dayColW + dayColW / 2;
       const diaNome = DIAS_SEMANA_CURTO[d.getDay()].toUpperCase();
       const diaNum = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = '#1e293b';
       ctx.font = '800 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillText(diaNome, cx, tableTop + 17);
-      ctx.fillStyle = '#8ce000';
+      ctx.fillStyle = '#3f6212';
       ctx.font = '700 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillText(diaNum, cx, tableTop + 33);
     });
@@ -1480,9 +1486,9 @@
 
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(pad, y, horaColW, rowH);
-      ctx.strokeStyle = '#cbd5d0';
+      ctx.strokeStyle = '#cbd5e1';
       ctx.strokeRect(pad, y, horaColW, rowH);
-      ctx.fillStyle = '#121619';
+      ctx.fillStyle = '#1e293b';
       ctx.font = '800 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(hora, pad + horaColW / 2, y + 23);
@@ -1495,7 +1501,7 @@
 
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(x, y, dayColW, rowH);
-        ctx.strokeStyle = '#cbd5d0';
+        ctx.strokeStyle = '#cbd5e1';
         ctx.strokeRect(x, y, dayColW, rowH);
 
         const m = 4;
@@ -1518,7 +1524,7 @@
 
     const footY = tableTop + tableHeaderH + HORARIOS_AGENDA.length * rowH + 22;
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#525b56';
+    ctx.fillStyle = '#64748b';
     ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('Horários em VERDE estão disponíveis para agendamento.', width / 2, footY);
 
@@ -1526,12 +1532,16 @@
       const fileName = `Agenda_DoutorLimpeza_${iniStr.replace(/\//g, '-')}.png`;
       const file = new File([blob], fileName, { type: 'image/png' });
 
+      // Copia a imagem para a área de transferência
+      let copiou = false;
       try {
         if (navigator.clipboard && window.ClipboardItem) {
           await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+          copiou = true;
         }
       } catch (e) {}
 
+      // No celular: abre direto a janela nativa de envio para escolher o contato no WhatsApp
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
           await navigator.share({
@@ -1545,10 +1555,11 @@
         }
       }
 
-      const link = document.createElement('a');
-      link.download = fileName;
-      link.href = URL.createObjectURL(blob);
-      link.click();
+      // No computador (sem share nativo de arquivo): abre o WhatsApp direto sem baixar foto
+      if (copiou) {
+        alert('Imagem da agenda copiada! O WhatsApp será aberto — basta clicar na conversa e colar (Ctrl+V).');
+      }
+      window.open('https://wa.me/', '_blank');
     }, 'image/png');
   }
 
@@ -1876,8 +1887,8 @@
     if (enable) window.scrollTo(0, 0);
   }
 
-  // ==================== GERAR IMAGEM BONITA DO ORÇAMENTO ====================
-  function drawWhatsAppHeaderLine(ctx, x, y) {
+  // ==================== GERAR IMAGEM BONITA DO ORÇAMENTO (CLARA E LEVE) ====================
+  function drawWhatsAppHeaderLine(ctx, x, y, textColor = '#ffffff') {
     const r = 7;
     const cx = x + r;
     const cy = y - 4;
@@ -1897,7 +1908,7 @@
     ctx.arc(cx + 0.5, cy - 0.5, 3.6, 0.35 * Math.PI, 1.15 * Math.PI);
     ctx.stroke();
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = textColor;
     ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('(15) 99735-3390 - Marcel', x + 19, y);
@@ -1942,30 +1953,33 @@
     ctx.fillRect(0, 0, width, height);
 
     roundRect(ctx, pad, pad, innerW, 96, 12);
-    ctx.fillStyle = '#121619';
+    ctx.fillStyle = '#f7fee7';
     ctx.fill();
+    ctx.strokeStyle = '#84cc16';
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
     ctx.font = '800 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#8ce000';
+    ctx.fillStyle = '#3f6212';
     ctx.fillText('DOUTOR LIMPEZA', pad + 18, pad + 35);
 
-    drawWhatsAppHeaderLine(ctx, pad + 18, pad + 56);
+    drawWhatsAppHeaderLine(ctx, pad + 18, pad + 56, '#1e293b');
 
-    ctx.fillStyle = '#d9f99d';
-    ctx.font = '500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = '#4d7c0f';
+    ctx.font = '600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('Lavagem e Higienização de Estofados e Colchões', pad + 18, pad + 75);
 
     ctx.textAlign = 'right';
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#1e293b';
     ctx.font = '800 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('ORÇAMENTO', width - pad - 18, pad + 32);
 
-    ctx.font = '700 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillStyle = '#8ce000';
+    ctx.font = '800 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = '#3f6212';
     ctx.fillText(`${data} às ${hora}`, width - pad - 18, pad + 52);
 
-    ctx.fillStyle = '#e0f2fe';
+    ctx.fillStyle = '#64748b';
     ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('Orçamento válido por 10 dias', width - pad - 18, pad + 72);
 
@@ -1979,7 +1993,7 @@
     ctx.stroke();
 
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#121619';
+    ctx.fillStyle = '#1e293b';
     ctx.font = '800 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('DADOS DO CLIENTE', pad + 14, y + 20);
 
@@ -2003,7 +2017,7 @@
 
     y += clientBoxH + 16;
     roundRect(ctx, pad, y, innerW, 34, 6);
-    ctx.fillStyle = '#e2e8f0';
+    ctx.fillStyle = '#f1f5f9';
     ctx.fill();
 
     ctx.fillStyle = '#0f172a';
@@ -2077,16 +2091,17 @@
     roundRect(ctx, pad, y, innerW, 56, 10);
     ctx.fillStyle = '#f7fee7';
     ctx.fill();
-    ctx.strokeStyle = '#8ce000';
+    ctx.strokeStyle = '#84cc16';
     ctx.lineWidth = 2;
     ctx.stroke();
 
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#121619';
+    ctx.fillStyle = '#3f6212';
     ctx.font = '800 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText('VALOR TOTAL DO ORÇAMENTO', pad + 16, y + 33);
 
     ctx.textAlign = 'right';
+    ctx.fillStyle = '#1e293b';
     ctx.font = '900 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText(fmtMoeda(total), width - pad - 16, y + 36);
 
@@ -2116,10 +2131,6 @@
         }
       }
 
-      const link = document.createElement('a');
-      link.download = fileName;
-      link.href = URL.createObjectURL(blob);
-      link.click();
       window.open(waUrl, '_blank');
     }, 'image/png');
   }
@@ -2313,7 +2324,6 @@
   function renderFormasPagamento() {
     const formas = getFormasPagamento();
 
-    // Select da Compra de Mercadoria
     const selCompra = document.getElementById('finFormaPag');
     if (selCompra) {
       const prev = selCompra.value;
@@ -2321,7 +2331,6 @@
       if (formas.includes(prev)) selCompra.value = prev;
     }
 
-    // Select do Filtro do Extrato
     const selFiltro = document.getElementById('filtroFormaPag');
     if (selFiltro) {
       const prevFiltro = selFiltro.value || 'todas';
@@ -2331,7 +2340,6 @@
       selFiltro.value = prevFiltro;
     }
 
-    // Chips na seção de cadastro
     const chipsBox = document.getElementById('listaFormasPagamentoChips');
     if (chipsBox) {
       chipsBox.innerHTML = formas.map((f, idx) => `
@@ -2458,7 +2466,6 @@
     elLucro.textContent = fmtMoeda(lucro);
     elLucro.className = 'kpi-val ' + (lucro >= 0 ? 'val-profit' : 'val-neg');
 
-    // Resumo de recebimentos agrupado por forma de pagamento
     const resumoBox = document.getElementById('resumoPorFormaPag');
     const entradasPorForma = Object.entries(porFormaReceita);
     if (entradasPorForma.length > 0) {
@@ -2659,6 +2666,3 @@
 </script>
 </body>
 </html>
-Quer adicionar um botão na aba Caixa para baixar ou compartilhar o extrato em imagem no WhatsApp?
-
-Sim
