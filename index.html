@@ -122,7 +122,7 @@
   .sync-ok { background: #16a34a; color: #fff; }
   .sync-warn { background: #d97706; color: #fff; }
 
-  .tabs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; }
+  .tabs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
   .tab-btn {
     background: rgba(255,255,255,0.12);
     border: none;
@@ -130,11 +130,16 @@
     padding: 8px 2px;
     border-radius: 6px;
     font-weight: 700;
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     cursor: pointer;
     transition: 0.15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .tab-btn.active { background: #8ce000; color: #121619; font-weight: 900; }
+  .tab-new { border: 1px solid rgba(140,224,0,0.55); color: #8ce000; }
+  .tab-new.active { background: #8ce000; color: #121619; }
 
   /* Containers */
   .container { max-width: 720px; margin: 0 auto; padding: 12px; }
@@ -228,6 +233,112 @@
   .kpi { background: #fff; border-radius: 8px; padding: 10px 8px; border: 1px solid #e2e8f0; text-align: center; }
   .kpi-title { font-size: 0.7rem; font-weight: 800; color: var(--muted); text-transform: uppercase; }
   .kpi-val { font-size: 1.05rem; font-weight: 900; margin-top: 4px; }
+
+  /* Badges de Pagamento e Extrato */
+  .pay-chip {
+    display: inline-block;
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+    padding: 2px 7px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .pay-tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pay-tag-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+  .pay-tag-del {
+    background: var(--red-bg);
+    color: var(--red);
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .extrato-resumo-pag {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .resumo-pag-pill {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+
+  /* ==================== ABA NEW (NOVIDADES & TUTORIAL) ==================== */
+  .new-hero {
+    background: linear-gradient(135deg, #121619 0%, #22292e 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border-bottom: 3px solid #8ce000;
+  }
+  .new-badge {
+    display: inline-block;
+    background: #8ce000;
+    color: #121619;
+    font-size: 0.68rem;
+    font-weight: 900;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .update-item {
+    border-left: 3px solid #8ce000;
+    padding-left: 10px;
+    margin-bottom: 12px;
+  }
+  .update-item:last-child { margin-bottom: 0; }
+  .update-date { font-size: 0.72rem; font-weight: 800; color: var(--green); }
+  .update-title { font-size: 0.9rem; font-weight: 800; color: var(--primary); margin: 2px 0; }
+  .update-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+  .tut-step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 9px 0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .tut-step:last-child { border-bottom: none; padding-bottom: 0; }
+  .tut-num {
+    background: #121619;
+    color: #8ce000;
+    font-weight: 900;
+    font-size: 0.78rem;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  .tut-body h4 { font-size: 0.86rem; font-weight: 800; color: var(--primary); margin-bottom: 2px; }
+  .tut-body p { font-size: 0.79rem; color: var(--muted); line-height: 1.4; }
 
   /* ==================== AGENDA VISUAL (GRADE SEMANAL) ==================== */
   .agenda-nav {
@@ -425,6 +536,7 @@
     <button class="tab-btn" onclick="switchTab('produtos', this)">Produtos</button>
     <button class="tab-btn" onclick="switchTab('financeiro', this)">Caixa</button>
     <button class="tab-btn" onclick="switchTab('historico', this)">Histórico</button>
+    <button class="tab-btn tab-new" onclick="switchTab('novidades', this)">NEW</button>
   </div>
 </header>
 
@@ -576,7 +688,6 @@
 
   <!-- ==================== ABA 2: AGENDA ==================== -->
   <div id="view-agenda" class="view">
-    <!-- PARTE 1: CONTROLE INTERATIVO DO PROFISSIONAL -->
     <div class="card">
       <div class="card-title">
         <span>Controle de Horários</span>
@@ -603,7 +714,6 @@
       </div>
     </div>
 
-    <!-- PARTE 2: SERVIÇOS APROVADOS DA SEMANA -->
     <div class="card">
       <div class="card-title">Serviços Aprovados na Agenda</div>
       <div class="table-wrap">
@@ -621,7 +731,7 @@
     </div>
   </div>
 
-  <!-- ==================== ABA CLIENTES (AUTO-ORGANIZADA) ==================== -->
+  <!-- ==================== ABA CLIENTES ==================== -->
   <div id="view-clientes" class="view">
     <div class="card">
       <div class="card-title">
@@ -672,7 +782,7 @@
     </div>
   </div>
 
-  <!-- ==================== ABA 3: CADASTRO DE PRODUTOS / SERVIÇOS ==================== -->
+  <!-- ==================== ABA PRODUTOS ==================== -->
   <div id="view-produtos" class="view">
     <div class="card">
       <div class="card-title">Cadastrar Novo Produto / Serviço</div>
@@ -712,62 +822,104 @@
     </div>
   </div>
 
-  <!-- ==================== ABA 4: CAIXA & LUCRO ==================== -->
+  <!-- ==================== ABA CAIXA (EXTRATO, RECEBIMENTOS & COMPRA DE MERCADORIAS) ==================== -->
   <div id="view-financeiro" class="view">
     <div class="kpi-grid">
       <div class="kpi">
-        <div class="kpi-title">Receitas</div>
+        <div class="kpi-title">Recebimentos (+)</div>
         <div class="kpi-val val-pos" id="kpiReceita">R$ 0,00</div>
       </div>
       <div class="kpi">
-        <div class="kpi-title">Despesas</div>
+        <div class="kpi-title">Compras / Saídas (-)</div>
         <div class="kpi-val val-neg" id="kpiDespesa">R$ 0,00</div>
       </div>
       <div class="kpi">
-        <div class="kpi-title">Lucro Líquido</div>
+        <div class="kpi-title">Saldo do Caixa</div>
         <div class="kpi-val val-profit" id="kpiLucro">R$ 0,00</div>
       </div>
     </div>
 
+    <!-- Compra de Mercadorias / Insumos -->
     <div class="card">
-      <div class="card-title">Lançar Movimentação Rápida</div>
-      <div class="grid-2">
-        <div class="form-group">
-          <label>Tipo</label>
-          <select id="finTipo">
-            <option value="receita">Serviço / Receita (+)</option>
-            <option value="despesa">Despesa / Gasto (-)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Data</label>
-          <input type="date" id="finData">
-        </div>
+      <div class="card-title">
+        <span>Compra de Mercadorias & Insumos</span>
       </div>
       <div class="grid-2">
         <div class="form-group">
-          <label>Descrição</label>
-          <input type="text" id="finDesc" placeholder="Ex: Produto Flotador / Combustível">
+          <label>Mercadoria / Produto Comprado</label>
+          <input type="text" id="finDesc" placeholder="Ex: Flotador 5L, Bactericida, Combustível">
         </div>
         <div class="form-group">
-          <label>Valor (R$)</label>
+          <label>Valor Pago (R$)</label>
           <input type="text" inputmode="decimal" class="money-input" id="finValor" placeholder="0,00">
         </div>
       </div>
-      <button class="btn btn-primary" onclick="lancarFinanceiro()">+ Registrar Lançamento</button>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Forma de Pagamento</label>
+          <select id="finFormaPag"></select>
+        </div>
+        <div class="form-group">
+          <label>Data da Compra</label>
+          <input type="date" id="finData">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="registrarCompraMercadoria()">+ Registrar Compra de Mercadoria</button>
     </div>
 
+    <!-- Cadastro de Formas de Pagamento / Recebimento -->
     <div class="card">
       <div class="card-title">
-        <span>Extrato Financeiro</span>
-        <select id="filtroMes" style="width:auto;padding:4px 8px;font-size:0.8rem;" onchange="renderFinanceiro()"></select>
+        <span>Formas de Pagamento / Recebimento</span>
       </div>
+      <div style="display:flex;gap:6px;">
+        <input type="text" id="novaFormaPagInput" placeholder="Ex: Pix, Cartão Crédito 2x, Dinheiro, Link...">
+        <button class="btn btn-accent" style="white-space:nowrap;" onclick="adicionarFormaPagamento()">+ Adicionar</button>
+      </div>
+      <div class="pay-tag-list" id="listaFormasPagamentoChips"></div>
+    </div>
+
+    <!-- Extrato do Caixa com Filtros por Data e Forma -->
+    <div class="card">
+      <div class="card-title">
+        <span>Extrato do Caixa</span>
+        <button class="btn btn-sm btn-outline" onclick="limparFiltrosExtrato()">Limpar Filtros</button>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:8px;">
+        <div>
+          <label>Data Inicial</label>
+          <input type="date" id="filtroDataIni" onchange="renderFinanceiro()">
+        </div>
+        <div>
+          <label>Data Final</label>
+          <input type="date" id="filtroDataFim" onchange="renderFinanceiro()">
+        </div>
+      </div>
+      <div class="grid-2" style="margin-bottom:10px;">
+        <div>
+          <label>Tipo de Movimentação</label>
+          <select id="filtroTipoCaixa" onchange="renderFinanceiro()">
+            <option value="todos">Todos (Entradas e Saídas)</option>
+            <option value="receita">Somente Recebimentos (+)</option>
+            <option value="despesa">Somente Compras/Saídas (-)</option>
+          </select>
+        </div>
+        <div>
+          <label>Forma de Pagamento</label>
+          <select id="filtroFormaPag" onchange="renderFinanceiro()"></select>
+        </div>
+      </div>
+
+      <!-- Resumo rápido por forma de pagamento no período filtrado -->
+      <div class="extrato-resumo-pag" id="resumoPorFormaPag"></div>
+
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>Data</th>
-              <th>Descrição</th>
+              <th>Histórico / Forma</th>
               <th class="num">Valor</th>
               <th style="width:36px;"></th>
             </tr>
@@ -778,7 +930,7 @@
     </div>
   </div>
 
-  <!-- ==================== ABA 5: HISTÓRICO DE ORÇAMENTOS ==================== -->
+  <!-- ==================== ABA HISTÓRICO DE ORÇAMENTOS ==================== -->
   <div id="view-historico" class="view">
     <div class="card">
       <div class="card-title">Orçamentos & Serviços Salvos</div>
@@ -798,11 +950,91 @@
     </div>
   </div>
 
+  <!-- ==================== ABA NEW (NOVIDADES & TUTORIAL) ==================== -->
+  <div id="view-novidades" class="view">
+    <div class="new-hero">
+      <span class="new-badge">Novidades & Guia</span>
+      <div style="font-size:1.05rem;font-weight:900;color:#8ce000;">Atualizações do Sistema Doutor Limpeza</div>
+      <div style="font-size:0.78rem;color:#e2e8f0;margin-top:3px;">Confira as melhorias recentes do aplicativo e o tutorial rápido para aproveitar todas as ferramentas.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>O Que Há de Novo</span></div>
+
+      <div class="update-item">
+        <div class="update-date">ATUALIZAÇÃO RECENTE • NOVEMBRO 2026</div>
+        <div class="update-title">Novo Controle de Caixa em Formato Extrato & Formas de Pagamento</div>
+        <div class="update-desc">
+          A aba <strong>Caixa</strong> agora funciona como um extrato completo: filtre entradas e saídas por <strong>Data Inicial, Data Final e Forma de Pagamento</strong> (Pix, Dinheiro, Cartão, etc.). Você também pode cadastrar suas próprias formas de recebimento e registrar <strong>Compras de Mercadorias</strong> (produtos de limpeza, insumos e combustível) direto no caixa.
+        </div>
+      </div>
+
+      <div class="update-item">
+        <div class="update-date">MELHORIA NO RECEBIMENTO</div>
+        <div class="update-title">Escolha da Forma de Recebimento ao Aprovar Orçamentos</div>
+        <div class="update-desc">
+          Ao aprovar um orçamento, você já informa como o cliente vai pagar (Pix, Cartão, Dinheiro...) e o valor entra identificado no extrato do Caixa. Caso o cliente mude a forma na hora do serviço, basta alterar direto na linha do extrato.
+        </div>
+      </div>
+
+      <div class="update-item">
+        <div class="update-date">ALERTAS INTELIGENTES</div>
+        <div class="update-title">Sino de Lembretes Antecipados (24h, 2h e 30min antes)</div>
+        <div class="update-desc">
+          O ícone de sino no topo avisa automaticamente quando você tem serviços aprovados chegando, mostrando cliente, horário e endereço para você não perder nenhum atendimento.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>Tutorial Rápido Passo a Passo</span></div>
+
+      <div class="tut-step">
+        <div class="tut-num">1</div>
+        <div class="tut-body">
+          <h4>Criar e Enviar Orçamento no WhatsApp</h4>
+          <p>Na aba <strong>Orçamento</strong>, escolha um cliente cadastrado (ou digite o nome e WhatsApp), selecione os serviços na lista, ajuste quantidade ou desconto e toque em <strong>Gerar Tela do Print</strong> para enviar a imagem pronta no WhatsApp do cliente.</p>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">2</div>
+        <div class="tut-body">
+          <h4>Aprovar Serviço e Agendar Automaticamente</h4>
+          <p>Quando o cliente fechar o serviço, clique em <strong>Aprovado (Agendar)</strong> (ou no botão <strong>✓</strong> na aba <em>Histórico</em>). Informe a forma de recebimento: o horário é reservado na <strong>Agenda</strong> e o valor entra no <strong>Caixa</strong>.</p>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">3</div>
+        <div class="tut-body">
+          <h4>Gerenciar Horários Livres e Compartilhar Agenda</h4>
+          <p>Na aba <strong>Agenda</strong>, toque em qualquer horário verde para bloquear como <em>Ocupado</em> (sem expor nomes de clientes). Use o botão <strong>Print Agenda Livre</strong> para enviar sua grade da semana aos clientes.</p>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">4</div>
+        <div class="tut-body">
+          <h4>Controlar Recebimentos e Compra de Mercadorias</h4>
+          <p>Na aba <strong>Caixa</strong>, cadastre suas formas de pagamento/recebimento, registre compras de produtos/insumos e use os filtros de data e forma de pagamento para conferir o extrato e o saldo líquido.</p>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">5</div>
+        <div class="tut-body">
+          <h4>Catálogo de Clientes e Serviços</h4>
+          <p>Todo cliente atendido é salvo automaticamente na aba <strong>Clientes</strong> com histórico de serviços. Na aba <strong>Produtos</strong>, você cadastra seus serviços com valor cobrado e custo estimado.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
   // ==================== CONFIGURAÇÃO FIXA DO FIREBASE ====================
-  // Cole aqui a URL do seu Firebase Realtime Database (ex: "https://seu-projeto-default-rtdb.firebaseio.com")
   const FIREBASE_DB_URL = "https://controle-contas-6fa7e-default-rtdb.firebaseio.com";
   const FIREBASE_NODE = "dr_limpeza";
 
@@ -818,6 +1050,14 @@
     { desc: 'Bancos Carro', val: 180, custo: 0 }
   ];
 
+  const FORMAS_PAGAMENTO_PADRAO = [
+    'Pix',
+    'Dinheiro',
+    'Cartão de Crédito',
+    'Cartão de Débito',
+    'Transferência'
+  ];
+
   const HORARIOS_AGENDA = ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
   const DIAS_SEMANA_CURTO = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -830,8 +1070,9 @@
     lancamentos: {},
     atalhos: [...PRODUTOS_PADRAO],
     clientes: {},
-    bloqueiosAgenda: {}, // chave "YYYY-MM-DD_HH:MM": true
-    notificacoes: []
+    bloqueiosAgenda: {},
+    notificacoes: [],
+    formasPagamento: [...FORMAS_PAGAMENTO_PADRAO]
   };
 
   function toggleNotifDropdown(e) {
@@ -939,7 +1180,6 @@
     const vistos = getLembretesVistos();
     let adicionou = false;
 
-    // Estágios de antecedência: 24h (amanhã/próximas 24h), 2h antes e 30min antes
     const estagios = [
       { id: '24h', maxMin: 24 * 60, minMin: 120, label: 'Serviço em menos de 24h' },
       { id: '2h',  maxMin: 120,     minMin: 30,  label: 'Serviço em menos de 2h' },
@@ -953,7 +1193,6 @@
       const dataServico = new Date(y, m - 1, d, hh || 9, mm || 0, 0);
       const diffMin = (dataServico.getTime() - agora.getTime()) / 60000;
 
-      // Ignora serviços que já passaram há mais de 15 minutos
       if (diffMin < -15 || diffMin > 24 * 60) return;
 
       const estagio = estagios.find(e => diffMin <= e.maxMin && diffMin > e.minMin);
@@ -963,7 +1202,6 @@
       if (vistos[chaveUnica]) return;
 
       salvarLembreteVisto(chaveUnica);
-      // Remove lembretes anteriores do mesmo serviço para não duplicar no sino
       dbData.notificacoes = dbData.notificacoes.filter(n => !(n.orcId === o.id && n.tipo === 'lembrete'));
 
       let tempoTexto = estagio.label;
@@ -1013,8 +1251,15 @@
   }
 
   const hojeISO = () => toISODate(new Date());
+  const primeiroDiaMesISO = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+  };
+
   document.getElementById('orcData').value = hojeISO();
   document.getElementById('finData').value = hojeISO();
+  document.getElementById('filtroDataIni').value = primeiroDiaMesISO();
+  document.getElementById('filtroDataFim').value = hojeISO();
 
   const fmtMoeda = (v) => Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   const fmtDecimalBR = (v) => Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1052,7 +1297,7 @@
   // ==================== AGENDA VISUAL & BLOQUEIOS ====================
   function getDiasSemanaAtual() {
     const dias = [];
-    for (let i = 0; i < 7; i++) { // Seg a Dom
+    for (let i = 0; i < 7; i++) {
       const dt = new Date(agendaInicioSemana);
       dt.setDate(agendaInicioSemana.getDate() + i);
       dias.push(dt);
@@ -1139,7 +1384,6 @@
     html += `</tbody>`;
     tbl.innerHTML = html;
 
-    // Tabela inferior: Serviços Aprovados
     const tbody = document.getElementById('agendaAprovadosBody');
     const listaAprovados = Object.values(dbData.orcamentos || {})
       .filter(o => o.status === 'concluido')
@@ -1158,7 +1402,7 @@
     }
   }
 
-  // ==================== GERAR IMAGEM DO PRINT DA AGENDA (SEM NOMES DE CLIENTES) ====================
+  // ==================== GERAR IMAGEM DO PRINT DA AGENDA ====================
   function gerarPrintAgenda() {
     const dias = getDiasSemanaAtual();
     const aprovadosMap = getAprovadosMap();
@@ -1183,7 +1427,6 @@
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
-    // Cabeçalho Preto Grafite + Verde Limão
     roundRect(ctx, pad, pad, innerW, headerH, 12);
     ctx.fillStyle = '#121619';
     ctx.fill();
@@ -1209,11 +1452,9 @@
     ctx.font = '700 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText(`${iniStr} a ${fimStr}`, width - pad - 16, pad + 54);
 
-    // Grade
     const horaColW = 64;
     const dayColW = (innerW - horaColW) / dias.length;
 
-    // Cabeçalho da Tabela
     ctx.fillStyle = '#121619';
     ctx.fillRect(pad, tableTop, innerW, tableHeaderH);
 
@@ -1234,11 +1475,9 @@
       ctx.fillText(diaNum, cx, tableTop + 33);
     });
 
-    // Linhas
     HORARIOS_AGENDA.forEach((hora, rIdx) => {
       const y = tableTop + tableHeaderH + rIdx * rowH;
 
-      // Célula Hora
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(pad, y, horaColW, rowH);
       ctx.strokeStyle = '#cbd5d0';
@@ -1252,7 +1491,6 @@
         const x = pad + horaColW + cIdx * dayColW;
         const iso = toISODate(d);
         const key = `${iso}_${hora}`;
-        // Tanto aprovado quanto bloqueado aparecem apenas como "OCUPADO" sem nome de cliente
         const isOcupado = Boolean(aprovadosMap[key] || bloqueios[key]);
 
         ctx.fillStyle = '#ffffff';
@@ -1260,7 +1498,6 @@
         ctx.strokeStyle = '#cbd5d0';
         ctx.strokeRect(x, y, dayColW, rowH);
 
-        // Pílula interna
         const m = 4;
         roundRect(ctx, x + m, y + m, dayColW - m * 2, rowH - m * 2, 6);
         if (isOcupado) {
@@ -1279,7 +1516,6 @@
       });
     });
 
-    // Rodapé legenda
     const footY = tableTop + tableHeaderH + HORARIOS_AGENDA.length * rowH + 22;
     ctx.textAlign = 'center';
     ctx.fillStyle = '#525b56';
@@ -1316,8 +1552,7 @@
     }, 'image/png');
   }
 
-
-  // ==================== CLIENTES (AUTO-ORGANIZAÇÃO & SELEÇÃO) ====================
+  // ==================== CLIENTES ====================
   let editandoClienteId = null;
 
   function normalizarChaveCliente(nome, tel) {
@@ -1337,7 +1572,6 @@
       const end = (o.end || '').trim();
       const chave = normalizarChaveCliente(nome, tel);
 
-      // Verifica se já existe cliente correspondente por ID, telefone ou nome
       let existente = dbData.clientes[chave] || Object.values(dbData.clientes).find(c => {
         const cTel = String(c.tel || '').replace(/\D/g, '');
         const oTel = tel.replace(/\D/g, '');
@@ -1356,7 +1590,6 @@
         };
         mudou = true;
       } else {
-        // Atualiza telefone ou endereço caso estejam vazios ou mais recentes
         if (!existente.tel && tel) { existente.tel = tel; mudou = true; }
         if (!existente.end && end) { existente.end = end; mudou = true; }
         if ((o.updatedAt || 0) > (existente.updatedAt || 0)) {
@@ -1412,7 +1645,6 @@
       return;
     }
 
-    // Conta histórico de orçamentos/serviços por cliente
     const orcs = Object.values(dbData.orcamentos || {});
 
     tbody.innerHTML = filtrados.map(c => {
@@ -1956,6 +2188,21 @@
     renderItens();
   }
 
+  function escolherFormaRecebimentoPrompt(formaAtual) {
+    const formas = getFormasPagamento();
+    const listaNumerada = formas.map((f, i) => `${i + 1} - ${f}`).join('\n');
+    const padrao = formaAtual || formas[0] || 'Pix';
+    const resp = prompt(`Informe a forma de recebimento:\n${listaNumerada}\n\nDigite o número ou o nome:`, padrao);
+    if (resp === null) return null;
+    const limpo = resp.trim();
+    if (!limpo) return padrao;
+    const num = parseInt(limpo, 10);
+    if (!isNaN(num) && num >= 1 && num <= formas.length) {
+      return formas[num - 1];
+    }
+    return limpo;
+  }
+
   async function salvarOrcamento(status) {
     if (itensOrcamento.length === 0) return alert('Adicione itens antes de salvar.');
     const nome = document.getElementById('cliNome').value.trim() || 'Cliente Avulso';
@@ -1966,9 +2213,17 @@
     const obs = document.getElementById('orcObs').value.trim();
     const { desc, total } = calcTotalOrcamento();
 
+    let formaRecebimento = '';
+    if (status === 'concluido') {
+      const escolha = escolherFormaRecebimentoPrompt();
+      if (escolha === null) return;
+      formaRecebimento = escolha;
+    }
+
     const id = editandoId || ('orc_' + Date.now());
     const registro = {
       id, nome, tel, end, data, hora, obs, desc, total, status,
+      formaPagamento: formaRecebimento,
       itens: [...itensOrcamento],
       updatedAt: Date.now()
     };
@@ -2000,11 +2255,12 @@
       dbData.lancamentos[finId] = {
         id: finId,
         tipo: 'receita',
+        categoria: 'recebimento',
+        formaPagamento: formaRecebimento,
         data,
         desc: `Serviço: ${nome} (${itensOrcamento.map(i => i.desc).join(', ')})`,
         valor: total
       };
-      // Ajusta semana da agenda para a data agendada
       const [y, m, d] = data.split('-').map(Number);
       agendaInicioSemana = getSegundaDaSemana(new Date(y, m - 1, d));
       registrarNotificacaoAprovacao(registro);
@@ -2012,8 +2268,9 @@
 
     await syncSave();
     renderAgenda();
+    renderFinanceiro();
     alert(status === 'concluido'
-      ? `Orçamento APROVADO! Agendado na aba Agenda (${fmtDataBR(data)} às ${hora}) e lançado no caixa.`
+      ? `Orçamento APROVADO! Agendado (${fmtDataBR(data)} às ${hora}) e lançado no Caixa (${formaRecebimento}).`
       : 'Orçamento salvo como ABERTO (ainda não ocupa horário na agenda).');
     novoOrcamento();
   }
@@ -2021,12 +2278,18 @@
   async function aprovarOrcamentoHistorico(id) {
     const o = dbData.orcamentos[id];
     if (!o) return;
+    const formaRecebimento = escolherFormaRecebimentoPrompt(o.formaPagamento);
+    if (formaRecebimento === null) return;
+
     o.status = 'concluido';
+    o.formaPagamento = formaRecebimento;
     o.updatedAt = Date.now();
     const finId = 'fin_' + id;
     dbData.lancamentos[finId] = {
       id: finId,
       tipo: 'receita',
+      categoria: 'recebimento',
+      formaPagamento: formaRecebimento,
       data: o.data,
       desc: `Serviço: ${o.nome} (${(o.itens || []).map(i => i.desc).join(', ')})`,
       valor: o.total
@@ -2035,20 +2298,94 @@
     await syncSave();
     renderHistorico();
     renderAgenda();
-    alert(`Orçamento de ${o.nome} APROVADO e incluído na Agenda!`);
+    renderFinanceiro();
+    alert(`Orçamento de ${o.nome} APROVADO (${formaRecebimento}) e incluído na Agenda!`);
   }
 
-  // ==================== FINANCEIRO ====================
-  async function lancarFinanceiro() {
-    const tipo = document.getElementById('finTipo').value;
-    const data = document.getElementById('finData').value || hojeISO();
+  // ==================== CAIXA, EXTRATO & FORMAS DE PAGAMENTO ====================
+  function getFormasPagamento() {
+    if (!Array.isArray(dbData.formasPagamento) || dbData.formasPagamento.length === 0) {
+      dbData.formasPagamento = [...FORMAS_PAGAMENTO_PADRAO];
+    }
+    return dbData.formasPagamento;
+  }
+
+  function renderFormasPagamento() {
+    const formas = getFormasPagamento();
+
+    // Select da Compra de Mercadoria
+    const selCompra = document.getElementById('finFormaPag');
+    if (selCompra) {
+      const prev = selCompra.value;
+      selCompra.innerHTML = formas.map(f => `<option value="${f}">${f}</option>`).join('');
+      if (formas.includes(prev)) selCompra.value = prev;
+    }
+
+    // Select do Filtro do Extrato
+    const selFiltro = document.getElementById('filtroFormaPag');
+    if (selFiltro) {
+      const prevFiltro = selFiltro.value || 'todas';
+      selFiltro.innerHTML = `<option value="todas">Todas as formas</option>` +
+        formas.map(f => `<option value="${f}">${f}</option>`).join('') +
+        `<option value="Não informada">Não informada</option>`;
+      selFiltro.value = prevFiltro;
+    }
+
+    // Chips na seção de cadastro
+    const chipsBox = document.getElementById('listaFormasPagamentoChips');
+    if (chipsBox) {
+      chipsBox.innerHTML = formas.map((f, idx) => `
+        <span class="pay-tag-item">
+          <span>${f}</span>
+          <button type="button" class="pay-tag-del" onclick="removerFormaPagamento(${idx})" title="Remover">✕</button>
+        </span>
+      `).join('');
+    }
+  }
+
+  async function adicionarFormaPagamento() {
+    const input = document.getElementById('novaFormaPagInput');
+    const nome = input.value.trim();
+    if (!nome) return alert('Digite o nome da forma de pagamento/recebimento.');
+    const formas = getFormasPagamento();
+    if (formas.some(f => f.toLowerCase() === nome.toLowerCase())) {
+      return alert('Esta forma de pagamento já está cadastrada.');
+    }
+    formas.push(nome);
+    input.value = '';
+    renderFormasPagamento();
+    await syncSave();
+  }
+
+  async function removerFormaPagamento(idx) {
+    const formas = getFormasPagamento();
+    if (formas.length <= 1) return alert('Mantenha pelo menos uma forma de pagamento cadastrada.');
+    const nome = formas[idx];
+    if (!confirm(`Remover "${nome}" das formas de pagamento?`)) return;
+    formas.splice(idx, 1);
+    renderFormasPagamento();
+    await syncSave();
+  }
+
+  async function registrarCompraMercadoria() {
     const desc = document.getElementById('finDesc').value.trim();
     const valor = parseMoedaBR(document.getElementById('finValor').value);
+    const formaPagamento = document.getElementById('finFormaPag').value || getFormasPagamento()[0] || 'Pix';
+    const data = document.getElementById('finData').value || hojeISO();
 
-    if (!desc || valor <= 0) return alert('Informe a descrição e um valor válido.');
+    if (!desc || valor <= 0) return alert('Informe o nome da mercadoria comprada e um valor válido.');
 
     const id = 'fin_' + Date.now();
-    dbData.lancamentos[id] = { id, tipo, data, desc, valor };
+    dbData.lancamentos[id] = {
+      id,
+      tipo: 'despesa',
+      categoria: 'mercadoria',
+      formaPagamento,
+      data,
+      desc: `Compra: ${desc}`,
+      valor
+    };
+
     document.getElementById('finDesc').value = '';
     document.getElementById('finValor').value = '';
 
@@ -2056,37 +2393,62 @@
     renderFinanceiro();
   }
 
+  async function alterarFormaPagamentoLancamento(id) {
+    const l = dbData.lancamentos[id];
+    if (!l) return;
+    const novaForma = escolherFormaRecebimentoPrompt(l.formaPagamento);
+    if (novaForma === null) return;
+    l.formaPagamento = novaForma;
+    await syncSave();
+    renderFinanceiro();
+  }
+
   async function excluirLancamento(id) {
-    if (!confirm('Excluir este lançamento?')) return;
+    if (!confirm('Excluir este registro do extrato do caixa?')) return;
     delete dbData.lancamentos[id];
     await syncSave();
     renderFinanceiro();
   }
 
-  function popularFiltroMeses() {
-    const sel = document.getElementById('filtroMes');
-    const atual = sel.value || hojeISO().slice(0, 7);
-    const meses = new Set([hojeISO().slice(0, 7)]);
-    Object.values(dbData.lancamentos || {}).forEach(l => {
-      if (l.data) meses.add(l.data.slice(0, 7));
-    });
-    const sorted = Array.from(meses).sort().reverse();
-    sel.innerHTML = `<option value="todos">Todos os meses</option>` +
-      sorted.map(m => `<option value="${m}">${m.split('-').reverse().join('/')}</option>`).join('');
-    sel.value = sorted.includes(atual) || atual === 'todos' ? atual : sorted[0];
+  function limparFiltrosExtrato() {
+    document.getElementById('filtroDataIni').value = '';
+    document.getElementById('filtroDataFim').value = '';
+    document.getElementById('filtroTipoCaixa').value = 'todos';
+    document.getElementById('filtroFormaPag').value = 'todas';
+    renderFinanceiro();
   }
 
   function renderFinanceiro() {
-    popularFiltroMeses();
-    const mes = document.getElementById('filtroMes').value;
+    renderFormasPagamento();
+
+    const dataIni = document.getElementById('filtroDataIni').value;
+    const dataFim = document.getElementById('filtroDataFim').value;
+    const tipoFiltro = document.getElementById('filtroTipoCaixa').value;
+    const formaFiltro = document.getElementById('filtroFormaPag').value || 'todas';
+
     const lista = Object.values(dbData.lancamentos || {})
-      .filter(l => mes === 'todos' || (l.data && l.data.startsWith(mes)))
-      .sort((a, b) => (b.data || '').localeCompare(a.data || ''));
+      .filter(l => {
+        if (dataIni && l.data && l.data < dataIni) return false;
+        if (dataFim && l.data && l.data > dataFim) return false;
+        if (tipoFiltro !== 'todos' && l.tipo !== tipoFiltro) return false;
+        const formaItem = l.formaPagamento || 'Não informada';
+        if (formaFiltro !== 'todas' && formaItem !== formaFiltro) return false;
+        return true;
+      })
+      .sort((a, b) => (b.data || '').localeCompare(a.data || '') || (b.id || '').localeCompare(a.id || ''));
 
     let rec = 0, desp = 0;
+    const porFormaReceita = {};
+
     lista.forEach(l => {
-      if (l.tipo === 'receita') rec += Number(l.valor || 0);
-      else desp += Number(l.valor || 0);
+      const val = Number(l.valor || 0);
+      const fp = l.formaPagamento || 'Não informada';
+      if (l.tipo === 'receita') {
+        rec += val;
+        porFormaReceita[fp] = (porFormaReceita[fp] || 0) + val;
+      } else {
+        desp += val;
+      }
     });
 
     document.getElementById('kpiReceita').textContent = fmtMoeda(rec);
@@ -2096,23 +2458,44 @@
     elLucro.textContent = fmtMoeda(lucro);
     elLucro.className = 'kpi-val ' + (lucro >= 0 ? 'val-profit' : 'val-neg');
 
+    // Resumo de recebimentos agrupado por forma de pagamento
+    const resumoBox = document.getElementById('resumoPorFormaPag');
+    const entradasPorForma = Object.entries(porFormaReceita);
+    if (entradasPorForma.length > 0) {
+      resumoBox.innerHTML = entradasPorForma.map(([forma, totalForma]) => `
+        <div class="resumo-pag-pill">
+          <span style="color:var(--muted);">${forma}:</span> <strong style="color:var(--green);">${fmtMoeda(totalForma)}</strong>
+        </div>
+      `).join('');
+    } else {
+      resumoBox.innerHTML = '';
+    }
+
     const tbody = document.getElementById('finTableBody');
     if (lista.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:14px;">Nenhum lançamento no período.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:14px;">Nenhuma movimentação encontrada para os filtros selecionados.</td></tr>';
       return;
     }
-    tbody.innerHTML = lista.map(l => `
+    tbody.innerHTML = lista.map(l => {
+      const formaLabel = l.formaPagamento || 'Não informada';
+      return `
       <tr>
         <td style="white-space:nowrap;">${fmtDataBR(l.data)}</td>
-        <td>${l.desc}</td>
-        <td class="num ${l.tipo === 'receita' ? 'val-pos' : 'val-neg'}">
+        <td>
+          <div>${l.desc}</div>
+          <span class="pay-chip" style="cursor:pointer;" onclick="alterarFormaPagamentoLancamento('${l.id}')" title="Toque para alterar a forma de pagamento">
+            ${formaLabel} ✎
+          </span>
+        </td>
+        <td class="num ${l.tipo === 'receita' ? 'val-pos' : 'val-neg'}" style="white-space:nowrap;">
           ${l.tipo === 'receita' ? '+' : '-'} ${fmtMoeda(l.valor)}
         </td>
         <td style="text-align:right;">
           <button class="btn btn-sm btn-danger" onclick="excluirLancamento('${l.id}')">✕</button>
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   }
 
   // ==================== HISTÓRICO ====================
@@ -2129,6 +2512,7 @@
         <td>
           <strong>${o.nome}</strong><br>
           <span style="font-size:0.75rem;color:var(--muted);">${fmtDataBR(o.data)} às ${o.hora || '09:00'} • ${(o.itens || []).length} item(ns)</span>
+          ${o.formaPagamento ? `<br><span class="pay-chip">${o.formaPagamento}</span>` : ''}
         </td>
         <td>
           <span class="badge-status ${o.status === 'concluido' ? 'st-ok' : 'st-orc'}">
@@ -2185,7 +2569,8 @@
           atalhos: Array.isArray(parsed.atalhos) ? parsed.atalhos : [...PRODUTOS_PADRAO],
           clientes: (parsed.clientes && !Array.isArray(parsed.clientes)) ? parsed.clientes : {},
           bloqueiosAgenda: parsed.bloqueiosAgenda || {},
-          notificacoes: Array.isArray(parsed.notificacoes) ? parsed.notificacoes : []
+          notificacoes: Array.isArray(parsed.notificacoes) ? parsed.notificacoes : [],
+          formasPagamento: Array.isArray(parsed.formasPagamento) && parsed.formasPagamento.length > 0 ? parsed.formasPagamento : [...FORMAS_PAGAMENTO_PADRAO]
         };
       } catch (e) {}
     }
@@ -2217,7 +2602,8 @@
           atalhos: Array.isArray(remote.atalhos) ? remote.atalhos : dbData.atalhos,
           clientes: (remote.clientes && !Array.isArray(remote.clientes)) ? remote.clientes : (dbData.clientes || {}),
           bloqueiosAgenda: remote.bloqueiosAgenda || {},
-          notificacoes: Array.isArray(remote.notificacoes) ? remote.notificacoes : []
+          notificacoes: Array.isArray(remote.notificacoes) ? remote.notificacoes : [],
+          formasPagamento: Array.isArray(remote.formasPagamento) && remote.formasPagamento.length > 0 ? remote.formasPagamento : dbData.formasPagamento
         };
         localStorage.setItem('drlimpeza_data', JSON.stringify(dbData));
         renderClientes();
@@ -2257,7 +2643,6 @@
     }
   }
 
-  // Sincroniza automaticamente ao voltar para o app no celular/PC ou a cada 20s
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) syncLoad();
   });
@@ -2274,3 +2659,6 @@
 </script>
 </body>
 </html>
+Quer adicionar um botão na aba Caixa para baixar ou compartilhar o extrato em imagem no WhatsApp?
+
+Sim
